@@ -250,7 +250,9 @@ function GlobalStoreContextProvider(props) {
         }
         asyncChangeListName(id);
     }
-
+    store.clearAllTransactions = function () {
+        tps.clearAllTransactions();
+    }
     // THIS FUNCTION PROCESSES CLOSING THE CURRENTLY LOADED LIST
     store.closeCurrentList = function () {
         storeReducer({
@@ -258,6 +260,7 @@ function GlobalStoreContextProvider(props) {
             payload: {}
         });
         tps.clearAllTransactions();
+        history.push("/");
     }
 
     // THIS FUNCTION CREATES A NEW LIST
@@ -327,6 +330,9 @@ function GlobalStoreContextProvider(props) {
     }
     store.deleteMarkedList = function () {
         store.deleteList(store.listIdMarkedForDeletion);
+        store.hideModals();
+    }
+    store.unmarkListForDeletion = function() {
         store.hideModals();
     }
     // THIS FUNCTION SHOWS THE MODAL FOR PROMPTING THE USER
