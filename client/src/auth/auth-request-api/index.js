@@ -40,6 +40,10 @@ export const registerUser = (firstName, lastName, email, password, passwordVerif
         passwordVerify : passwordVerify
     })
 }
+
+
+
+
 const apis = {
     getLoggedIn,
     registerUser,

@@ -40,7 +40,8 @@ const CurrentModal = {
     NONE: "NONE",
     DELETE_LIST: "DELETE_LIST",
     EDIT_SONG: "EDIT_SONG",
-    REMOVE_SONG: "REMOVE_SONG"
+    REMOVE_SONG: "REMOVE_SONG",
+    ERROR_MODAL: "ERROR_MODAL"
 }
 
 // WITH THIS WE'RE MAKING OUR GLOBAL DATA STORE
@@ -195,6 +196,19 @@ function GlobalStoreContextProvider(props) {
                     listIdMarkedForDeletion: null,
                     listMarkedForDeletion: null
                 });
+            }
+            case GlobalStoreActionType.ERROR_MODAL: {
+                return setStore({
+                    currentModal: CurrentModal.ERROR_MODAL,
+                    idNamePairs: null,
+                    currentList: null,
+                    currentSongIndex: null,
+                    currentSong: null,
+                    newListCounter: null,
+                    listNameActive: false,
+                    listIdMarkedForDeletion: null,
+                    listMarkedForDeletion: null
+                }); 
             }
             case GlobalStoreActionType.HIDE_MODALS: {
                 return setStore({
@@ -351,6 +365,14 @@ function GlobalStoreContextProvider(props) {
         });
 
     }
+
+    store.showErrorModal = () => {
+        storeReducer({
+            type: GlobalStoreActionType.ERROR_MODAL,
+            payload: {}
+        })
+    }
+
     store.hideModals = () => {
         storeReducer({
             type: GlobalStoreActionType.HIDE_MODALS,
@@ -365,6 +387,9 @@ function GlobalStoreContextProvider(props) {
     }
     store.isRemoveSongModalOpen = () => {
         return store.currentModal === CurrentModal.REMOVE_SONG;
+    }
+    store.isErrorModalOpen = () => {
+        return store.currentModal === CurrentModal.ERROR_MODAL;
     }
 
     // THE FOLLOWING 8 FUNCTIONS ARE FOR COORDINATING THE UPDATING

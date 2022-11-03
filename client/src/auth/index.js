@@ -10,7 +10,9 @@ export const AuthActionType = {
     GET_LOGGED_IN: "GET_LOGGED_IN",
     LOGIN_USER: "LOGIN_USER",
     LOGOUT_USER: "LOGOUT_USER",
-    REGISTER_USER: "REGISTER_USER"
+    REGISTER_USER: "REGISTER_USER",
+    ERROR_MESSAGE: "ERROR_MESSAGE",
+    CLOSE_ERROR_MESSAGE: "CLOSE_ERROR_MESSAGE"
 }
 
 function AuthContextProvider(props) {
@@ -18,15 +20,23 @@ function AuthContextProvider(props) {
         user: null,
         loggedIn: false
     });
+    const [errorMessage, setErrorMessage] = useState(null);
+    const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
     const history = useHistory();
 
-    useEffect(() => {
-        auth.getLoggedIn();
-    }, []);
+   
 
     const authReducer = (action) => {
         const { type, payload } = action;
         switch (type) {
+            case AuthActionType.OPEN_ERROR_MESSAGE: {
+                setErrorMessage(payload);
+                return setIsErrorModalOpen(true);
+            }
+            case AuthActionType.CLOSE_ERROR_MESSAGE: {
+                setErrorMessage(null);
+                return setIsErrorModalOpen(false);
+            }
             case AuthActionType.GET_LOGGED_IN: {
                 return setAuth({
                     user: payload.user,
@@ -69,36 +79,76 @@ function AuthContextProvider(props) {
         }
     }
 
-    auth.registerUser = async function(firstName, lastName, email, password, passwordVerify) {
-        const response = await api.registerUser(firstName, lastName, email, password, passwordVerify);      
-        if (response.status === 200) {
-            authReducer({
-                type: AuthActionType.REGISTER_USER,
-                payload: {
-                    user: response.data.user
-                }
-            })
-            history.push("/login");
+    auth.getErrorMessage = () => {
+        if (errorMessage === null){
+            return null;
+        }
+        let str = JSON.stringify(errorMessage["error"]);
+        return str.replace(/\"/g, "");
+    }
+
+    auth.checkIsErrorModalOpen = () => {
+        return isErrorModalOpen;
+    }
+
+    auth.showErrorModal = function(error){
+        authReducer({
+            type: AuthActionType.OPEN_ERROR_MESSAGE,
+            payload: {error}
+        })
+    }
+
+    auth.hideErrorModal = function(){
+        authReducer({
+            type: AuthActionType.CLOSE_ERROR_MESSAGE,
+            payload: {}
+        })
+    }
+
+    auth.registerUser = async function (firstName, lastName, email, password, passwordVerify) {
+        try {
+            const response = await api.registerUser(firstName, lastName, email, password, passwordVerify);
+            if (response.status === 200) {
+                authReducer({
+                    type: AuthActionType.REGISTER_USER,
+                    payload: {
+                        user: response.data.user
+                    }
+                })
+                auth.loginUser(email, password);
+            }
+        }
+        catch (error) {
+            console.log(error.response.data.errorMessage);
+            let message = error.response.data.errorMessage;
+            auth.showErrorModal(message);
         }
     }
 
-    auth.loginUser = async function(email, password) {
-        const response = await api.loginUser(email, password);
-        if (response.status === 200) {
-            authReducer({
-                type: AuthActionType.LOGIN_USER,
-                payload: {
-                    user: response.data.user
-                }
-            })
-            history.push("/");
+    auth.loginUser = async function (email, password) {
+        try {
+            const response = await api.loginUser(email, password);
+            if (response.status === 200) {
+                authReducer({
+                    type: AuthActionType.LOGIN_USER,
+                    payload: {
+                        user: response.data.user
+                    }
+                })
+                history.push("/");
+            }
+        }
+        catch (error) {
+            console.log(error.response.data.errorMessage);
+            let message = error.response.data.errorMessage;
+            auth.showErrorModal(message);
         }
     }
 
-    auth.logoutUser = async function() {
+    auth.logoutUser = async function () {
         const response = await api.logoutUser();
         if (response.status === 200) {
-            authReducer( {
+            authReducer({
                 type: AuthActionType.LOGOUT_USER,
                 payload: null
             })
@@ -106,7 +156,7 @@ function AuthContextProvider(props) {
         }
     }
 
-    auth.getUserInitials = function() {
+    auth.getUserInitials = function () {
         let initials = "";
         if (auth.user) {
             initials += auth.user.firstName.charAt(0);
