@@ -44,9 +44,9 @@ export default function MUIErrorModal() {
                     id="error-modal"
                     className={modalClass}
                     data-animation="slideInOutLeft">
-                    <div className="modal-root" id='verify-remove-song-root'>
+                    <div className="modal-root">
                         <div className="modal-center">
-                            <div className="modal-center-content">
+                            <div className="modal-center-content" id='error-text'>
                                 {error}
                             </div>
                         </div>

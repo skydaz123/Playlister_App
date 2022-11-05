@@ -143,6 +143,17 @@ body {
   float: left;
 }
 
+#close-error-modal-button {
+  position: relative;
+  left: 25%;
+  text-align: center;
+}
+
+#error-text {
+  background-color: white;
+  font-size: 16px;
+}
+
 #list-selector-list {
   position: absolute;
   left: 0%;
@@ -152,6 +163,14 @@ body {
   display: flex;
   flex-direction: column;
   overflow: scroll;
+}
+
+#dialog-yes-button {
+  font-size: 25px
+}
+
+#dialog-no-button {
+  font-size: 25px
 }
 
 .list-card,
@@ -189,6 +208,8 @@ body {
 .list-card-button {
   float: right;
   transform: scale(2);
+  border-radius: 5px;
+  font-size: 15px
 }
 
 #workspace-home,
@@ -308,6 +329,19 @@ input {
   background: var(--lightgray);
 }
 
+.modal-textfield {
+  border-radius: 5px;
+}
+
+
+.modal-north {
+  text-align: center;
+  font-size: 20px;
+}
+
+.modal-prompt {
+  background: gray;
+}
 .modal-header {
   display: flex;
   align-items: center;
@@ -329,10 +363,18 @@ input {
   width: 20%;
 }
 
+.modal-center-content {
+  background-color: lightskyblue;
+  border-radius: 5px;
+}
 .dialog-header {
+  text-align:center;
   font-size: 24pt;
 }
 
+.modal-button {
+  border-radius: 5px;
+}
 #close-modal-button {
   float: right;
 }
