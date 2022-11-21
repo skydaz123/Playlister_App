@@ -6,19 +6,22 @@ import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/material/IconButton';
 import ListItem from '@mui/material/ListItem';
 import TextField from '@mui/material/TextField';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ThumbDownIcon from '@mui/icons-material/ThumbDown';
+import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
 
-/*
-    This is a card in our list of top 5 lists. It lets select
-    a list for editing and it has controls for changing its 
-    name or deleting it.
-    
-    @author McKilla Gorilla
-*/
+
+
 function ListCard(props) {
     const { store } = useContext(GlobalStoreContext);
     const [editActive, setEditActive] = useState(false);
     const [text, setText] = useState("");
     const { idNamePair, selected } = props;
+
+    const date = idNamePair.date;
+    const formattedDate = date.substring(0,10);
 
     function handleLoadList(event, id) {
         console.log("handleLoadList for " + id);
@@ -74,30 +77,39 @@ function ListCard(props) {
         cardStatus = true;
     }
     let cardElement =
-        <ListItem
-            id={idNamePair._id}
-            key={idNamePair._id}
-            sx={{ marginTop: '15px', display: 'flex', p: 1 }}
-            style={{ width: '100%', fontSize: '48pt' }}
-            button
-            onClick={(event) => {
-                handleLoadList(event, idNamePair._id)
-            }}
-        >
-            <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.name}</Box>
-            <Box sx={{ p: 1 }}>
-                <IconButton onClick={handleToggleEdit} aria-label='edit'>
-                    <EditIcon style={{fontSize:'48pt'}} />
-                </IconButton>
-            </Box>
-            <Box sx={{ p: 1 }}>
-                <IconButton onClick={(event) => {
-                        handleDeleteList(event, idNamePair._id)
-                    }} aria-label='delete'>
-                    <DeleteIcon style={{fontSize:'48pt'}} />
-                </IconButton>
-            </Box>
-        </ListItem>
+
+        <Grid container style={{ marginTop: 10 }}>
+            <Grid Item md={10}>
+                <div style={{ fontSize: 40 }}>{idNamePair.name}</div>
+            </Grid>
+            <Grid Item>
+                <ThumbUpIcon fontSize="large" />
+            </Grid>
+            <Grid Item>
+                <Grid Item>
+                    <div style={{ fontSize: 30, marginLeft:2}}>0</div>
+                </Grid>
+            </Grid>
+            <Grid Item>
+                <ThumbDownIcon fontSize="large" sx={{marginLeft:2}} />
+            </Grid>
+            <Grid Item>
+                <div style={{ fontSize: 30, marginLeft: 5 }}>0</div>
+            </Grid>
+            <Grid Item md={12}>
+                <div style={{ fontSize: 20 }}>Published By: </div>
+            </Grid>
+            <Grid Item md={5} sx={{ marginTop: 3 }}>
+                <div style={{ fontSize: 20 }}>Published: {formattedDate}</div>
+            </Grid>
+            <Grid Item sx={{ marginTop: 3 }} md={6}>
+                <div style={{ fontSize: 20 }}>Listens: 0</div>
+            </Grid>
+            <Grid Item sx={{}}>
+                <KeyboardDoubleArrowDownIcon fontSize="large" />
+            </Grid>
+        </Grid>
+
 
     if (editActive) {
         cardElement =
@@ -113,8 +125,8 @@ function ListCard(props) {
                 onKeyPress={handleKeyPress}
                 onChange={handleUpdateText}
                 defaultValue={idNamePair.name}
-                inputProps={{style: {fontSize: 48}}}
-                InputLabelProps={{style: {fontSize: 24}}}
+                inputProps={{ style: { fontSize: 48 } }}
+                InputLabelProps={{ style: { fontSize: 24 } }}
                 autoFocus
             />
     }
@@ -124,3 +136,34 @@ function ListCard(props) {
 }
 
 export default ListCard;
+
+
+/*
+<ListItem
+            id={idNamePair._id}
+            key={idNamePair._id}
+            sx={{ marginTop: '15px', display: 'flex', p: 1 }}
+            style={{ width: '100%', fontSize: '40pt' }}
+            button
+            onClick={(event) => {
+                handleLoadList(event, idNamePair._id)
+            }}
+        >
+
+<Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.name}</Box>
+                <Box sx={{ p: 1 }}>
+                    <IconButton onClick={handleToggleEdit} aria-label='edit'>
+                        <EditIcon style={{ fontSize: '30pt' }} />
+                    </IconButton>
+                </Box>
+                <Box sx={{ p: 1 }}>
+                    <IconButton onClick={(event) => {
+                        handleDeleteList(event, idNamePair._id)
+                    }} aria-label='delete'>
+                        <DeleteIcon style={{ fontSize: '30pt' }} />
+                    </IconButton>
+                </Box>
+                
+                
+                
+                */

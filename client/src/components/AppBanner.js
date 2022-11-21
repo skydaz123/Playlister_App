@@ -100,14 +100,14 @@ export default function AppBanner() {
                         variant="h4"
                         noWrap
                         component="div"
-                        sx={{ display: { xs: 'none', sm: 'block' } }}                        
+                        sx={{ display: { xs: 'none', sm: 'block'} }}                        
                     >
-                        <Link style={{ textDecoration: 'none', color: 'white' }} to='/'>⌂</Link>
+                        Playlister
                     </Typography>
                     <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box>
                     <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                         <IconButton
-                            size="large"
+                            size="medium"
                             edge="end"
                             aria-label="account of current user"
                             aria-controls={menuId}
