@@ -17,7 +17,8 @@ import Typography from '@mui/material/Typography';
 import HomeIcon from '@mui/icons-material/Home';
 import PeopleIcon from '@mui/icons-material/People';
 import PersonIcon from '@mui/icons-material/Person';
-import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import SortIcon from '@mui/icons-material/Sort';
+
 
 
 
@@ -143,19 +144,15 @@ export default function MenuBanner() {
                         component="div"
                         sx={{ margin: "auto", backgroundColor: "white", width: 500 }}
                     >
-                        <TextField label="search..." variant="outlined" sx={{ width: "100%" }}></TextField>
+                        <TextField label="Search" variant="outlined" sx={{ width: "100%" }}></TextField>
                     </Typography>
                     <Typography
                         variant="h4"
-                        noWrap
-                        component="div"
                         sx={{ marginLeft: "auto", marginTop: 1 }}
                     >
-                        <Link style={{ textDecoration: 'none', color: 'white' }} to='/'>
-                            <FilterAltIcon fontSize="large"></FilterAltIcon>
-                        </Link>
-
+                        <div style={{ fontSize: 20 }}>SORT BY</div>
                     </Typography>
+                    <SortIcon fontSize="large" sx={{ marginLeft: 1, marginTop: 1 }}></SortIcon>
                 </Toolbar>
             </AppBar>
         </Box>
