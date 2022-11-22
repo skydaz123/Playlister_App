@@ -152,7 +152,7 @@ export default function MenuBanner() {
                     >
                         <div style={{ fontSize: 20 }}>SORT BY</div>
                     </Typography>
-                    <SortIcon fontSize="large" sx={{ marginLeft: 1, marginTop: 1 }}></SortIcon>
+                    <SortIcon sx={{ marginLeft: 1, marginTop: 1, fontSize:40 }}></SortIcon>
                 </Toolbar>
             </AppBar>
         </Box>

@@ -82,7 +82,7 @@ const HomeScreen = () => {
                         onChange={handleChange}
                         textColor="secondary"
                         indicatorColor="secondary"
-                        sx={{ backgroundColor: "lightgray", width: "32.2%", borderRadius: 1 }}
+                        sx={{ backgroundColor: "lightgray", width: "31.5%", borderRadius: 1 }}
                     >
                         <Tab value="one" label="Player" sx={{ border: "1px solid black" }} />
                         <Tab value="two" label="Comments" sx={{ border: "1px solid black" }} />
@@ -106,7 +106,7 @@ const HomeScreen = () => {
                     aria-label="add"
                     id="add-list-button"
                     onClick={handleCreateNewList}
-                    sx={{ backgroundColor: "gray", color: "black" }}
+                    sx={{ backgroundColor: "lightgray", color: "black" }}
                 >
                     <AddIcon />
                 </Fab>

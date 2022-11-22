@@ -93,9 +93,10 @@ export default function AppBanner() {
             <AppBar position="static">
                 <Toolbar>
                     <Typography
-                        variant="h4"
+                        variant="h3"
                         noWrap
                         component="div"
+                        sx={{ fontFamily: "Dancing Script, cursive", color:"red" }}
                     >
                         Playlister
                     </Typography>
@@ -117,6 +118,6 @@ export default function AppBanner() {
             {
                 menu
             }
-        </Box>
+        </Box >
     );
 }
