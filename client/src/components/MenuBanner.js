@@ -4,6 +4,7 @@ import AuthContext from '../auth';
 import { GlobalStoreContext } from '../store'
 
 import EditToolbar from './EditToolbar'
+import TextField from '@mui/material/TextField';
 
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import AppBar from '@mui/material/AppBar';
@@ -17,6 +18,8 @@ import HomeIcon from '@mui/icons-material/Home';
 import PeopleIcon from '@mui/icons-material/People';
 import PersonIcon from '@mui/icons-material/Person';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
+
+
 
 
 
@@ -133,6 +136,14 @@ export default function MenuBanner() {
                             <PersonIcon fontSize="large"></PersonIcon>
                         </Link>
 
+                    </Typography>
+                    <Typography
+                        variant="h4"
+                        noWrap
+                        component="div"
+                        sx={{ margin: "auto", backgroundColor: "white", width: 500 }}
+                    >
+                        <TextField label="search..." variant="outlined" sx={{ width: "100%" }}></TextField>
                     </Typography>
                     <Typography
                         variant="h4"
