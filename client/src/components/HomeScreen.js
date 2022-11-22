@@ -9,6 +9,7 @@ import Paper from '@mui/material/Paper';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import AppBanner from './AppBanner';
 //import YouTubePlayer from './YouTubePlayer';
+import MenuBanner from './MenuBanner';
 
 
 import AddIcon from '@mui/icons-material/Add';
@@ -64,7 +65,7 @@ const HomeScreen = () => {
             <Grid container spacing={2}>
                 <Grid item md={12}>
                     <Box >
-                        <AppBanner />
+                        <MenuBanner />
                     </Box>
                 </Grid>
                 <Grid item md={7} >
@@ -98,7 +99,6 @@ const HomeScreen = () => {
                     </Box>
                 </Grid>
                 <Grid item>
-
                 </Grid>
             </Grid>
             <div id="list-selector-heading">
@@ -106,7 +106,7 @@ const HomeScreen = () => {
                     aria-label="add"
                     id="add-list-button"
                     onClick={handleCreateNewList}
-                    sx={{ backgroundColor: "lightgray", color: "black" }}
+                    sx={{ backgroundColor: "gray", color: "black" }}
                 >
                     <AddIcon />
                 </Fab>

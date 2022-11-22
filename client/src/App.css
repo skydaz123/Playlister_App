@@ -139,7 +139,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: gray;
+  background-color: lightgray;
 }
 
 #add-list-button {
@@ -160,7 +160,6 @@ body {
 #list-selector-list {
   max-height: 680px; 
   overflow-y: scroll;
-  background-color: "red";
 }
 
 #dialog-yes-button {
