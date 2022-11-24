@@ -32,13 +32,7 @@ const App = () => {
                         <Route path="/" exact component={HomeWrapper} />
                         <Route path="/login/" exact component={LoginScreen} />
                         <Route path="/register/" exact component={RegisterScreen} />
-                        <div style={{ width: "50%" }}>
-                            <Route path="/playlist/:id" exact component={WorkspaceScreen} />
-                        </div>
                     </Switch>
-                    <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, paddingBottom: 20 }}>
-                        <Statusbar />
-                    </div>
                 </GlobalStoreContextProvider>
             </AuthContextProvider>
         </BrowserRouter>

@@ -158,8 +158,8 @@ body {
 }
 
 #list-selector-list {
-  max-height: 680px; 
-  overflow-y: scroll;
+  max-height: 450px;
+  overflow-y: auto;
 }
 
 #dialog-yes-button {
