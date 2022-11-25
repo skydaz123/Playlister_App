@@ -1,3 +1,4 @@
+//import YouTubePlayerExample from './../YouTubePlaylisterReact-main/src/PlaylisterYouTubePlayer.js'
 import React, { useContext, useEffect } from "react";
 import { GlobalStoreContext } from "../store";
 import ListCard from "./ListCard.js";
@@ -8,7 +9,6 @@ import Tab from "@mui/material/Tab";
 import Paper from "@mui/material/Paper";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import AppBanner from "./AppBanner";
-//import YouTubePlayer from './YouTubePlayer';
 import MenuBanner from "./MenuBanner";
 import { sizing } from "@mui/system";
 
@@ -101,11 +101,11 @@ const HomeScreen = () => {
             sx={{
               bgcolor: "lightgray",
               width: "95%",
-              height: "90%",
+              height: 400,
               borderRadius: 1,
             }}
           >
-            hello
+            Hello
           </Box>
         </Grid>
         <Grid item></Grid>

@@ -12,6 +12,9 @@ import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
 import WorkspaceScreen from "./WorkspaceScreen";
+import EditToolbar from "./EditToolbar";
+import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp";
+import Button from "@mui/material/Button";
 
 function ListCard(props) {
   const { store } = useContext(GlobalStoreContext);
@@ -49,10 +52,7 @@ function ListCard(props) {
     setEditActive(newActive);
   }
 
-  async function handleDeleteList(event, id) {
-    event.stopPropagation();
-    let _id = event.target.id;
-    _id = ("" + _id).substring("delete-list-".length);
+  async function handleDeleteList(id) {
     store.markListForDeletion(id);
   }
 
@@ -67,17 +67,56 @@ function ListCard(props) {
     setText(event.target.value);
   }
 
-  function handleExpandList(event, id) {
+  function handleExpandList(id) {
     store.setCurrentList(id);
   }
 
-  let songList = <div>poop</div>;
-  
-  if (store.currentList !== null && store.currentList._id === idNamePair._id){
+  let expandArrow = (
+    <IconButton
+      onClick={() => {
+        handleExpandList(idNamePair._id);
+      }}
+    >
+      <KeyboardDoubleArrowDownIcon fontSize="large" />
+    </IconButton>
+  );
+
+  /*<IconButton
+          onClick={(event) => {
+            handleExpandList(event, idNamePair._id);
+          }}
+        ></IconButton>*/
+
+  let songList = <div></div>;
+
+  if (store.currentList !== null && store.currentList._id === idNamePair._id) {
+    expandArrow = (
+      <IconButton
+        onClick={() => {
+          store.closeCurrentList();
+        }}
+      >
+        <KeyboardDoubleArrowUpIcon fontSize="large" />
+      </IconButton>
+    );
+
     songList = (
+      <Box sx={{ backgroundColor: "darkgray" }}>
         <WorkspaceScreen />
-    )
+        <EditToolbar />
+        <Button variant="contained" sx={{ fontSize: 13 }}>
+          Publish
+        </Button>
+        <Button variant="contained" sx={{ fontSize: 13 }}  onClick={() => {handleDeleteList(idNamePair._id)}}>
+          Delete
+        </Button>
+        <Button variant="contained" sx={{ fontSize: 13 }}>
+          Duplicate
+        </Button>
+      </Box>
+    );
   }
+
 
   let selectClass = "unselected-list-card";
   if (selected) {
@@ -110,29 +149,18 @@ function ListCard(props) {
       <Grid Item md={12}>
         <div style={{ fontSize: 20 }}>Published By: </div>
       </Grid>
-      
       <Grid Item md={12}>
         {songList}
       </Grid>
-
       <Grid Item md={5} sx={{ marginTop: 3 }}>
         <div style={{ fontSize: 20 }}> Published: {formattedDate} </div>
       </Grid>
       <Grid Item sx={{ marginTop: 3 }} md={5}>
         <div style={{ fontSize: 20 }}>Listens: 0</div>
       </Grid>
-      <Grid Item>
-        <IconButton
-          onClick={(event) => {
-            handleExpandList(event, idNamePair._id);
-          }}
-        >
-          <KeyboardDoubleArrowDownIcon fontSize="large" />
-        </IconButton>
-      </Grid>
+      <Grid Item>{expandArrow}</Grid>
     </Grid>
   );
-
 
   if (editActive) {
     cardElement = (
