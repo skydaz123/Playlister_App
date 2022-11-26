@@ -277,15 +277,27 @@ function GlobalStoreContextProvider(props) {
     history.push("/");
   };
 
+  store.addComment = function(userName, comment) {
+    console.log("COMMENT IS: " + comment);
+    const newComment = {
+      userName: userName,
+      comment: comment
+    }
+    store.currentList.comments.push(newComment);
+    store.updateCurrentList();
+  }
   // THIS FUNCTION CREATES A NEW LIST
-  store.createNewList = function () {
+  store.createNewList = function (userName) {
     async function asyncCreateNewList() {
       let newListName = "Untitled" + store.newListCounter;
       const response = await api.createPlaylist(
         newListName,
+        userName,
         [],
-        auth.user.email
+        auth.user.email,
       );
+      //(newListName, userName, newSongs, userEmail)
+      console.log("USERNAME TO INPUT IS :" + userName)
       console.log("createNewList response: " + response);
       tps.clearAllTransactions();
       let newList = response.data.playlist;
@@ -298,6 +310,8 @@ function GlobalStoreContextProvider(props) {
     }
     asyncCreateNewList();
   };
+
+  
 
   // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
   store.loadIdNamePairs = function () {
@@ -519,6 +533,7 @@ function GlobalStoreContextProvider(props) {
     );
     tps.addTransaction(transaction);
   };
+
   store.updateCurrentList = function () {
     async function asyncUpdateCurrentList() {
       const response = await api.updatePlaylistById(
@@ -530,6 +545,10 @@ function GlobalStoreContextProvider(props) {
           type: GlobalStoreActionType.SET_CURRENT_LIST,
           payload: store.currentList,
         });
+        console.log("SUCCESSFULLY UPDATED LIST");
+      }
+      else{
+        console.log("FAILED TO UPDATE LIST");
       }
     }
     asyncUpdateCurrentList();

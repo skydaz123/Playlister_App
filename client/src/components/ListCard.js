@@ -15,8 +15,10 @@ import WorkspaceScreen from "./WorkspaceScreen";
 import EditToolbar from "./EditToolbar";
 import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp";
 import Button from "@mui/material/Button";
+import AuthContext from '../auth';
 
 function ListCard(props) {
+  const { auth } = useContext(AuthContext);
   const { store } = useContext(GlobalStoreContext);
   const [editActive, setEditActive] = useState(false);
   const [text, setText] = useState("");
@@ -101,22 +103,31 @@ function ListCard(props) {
     );
 
     songList = (
-      <Box sx={{ backgroundColor: "darkgray" }}>
-        <WorkspaceScreen />
-        <EditToolbar />
-        <Button variant="contained" sx={{ fontSize: 13 }}>
-          Publish
-        </Button>
-        <Button variant="contained" sx={{ fontSize: 13 }}  onClick={() => {handleDeleteList(idNamePair._id)}}>
-          Delete
-        </Button>
-        <Button variant="contained" sx={{ fontSize: 13 }}>
-          Duplicate
-        </Button>
+      <Box sx={{ backgroundColor: "darkgray", height: 285 }}>
+        <Box sx={{ height:250, maxHeight: 250, overflowY: "scroll" }}>
+          <WorkspaceScreen />
+        </Box>
+        <Box>
+          <EditToolbar />
+          <Button variant="contained" sx={{ fontSize: 13 }}>
+            Publish
+          </Button>
+          <Button
+            variant="contained"
+            sx={{ fontSize: 13 }}
+            onClick={() => {
+              handleDeleteList(idNamePair._id);
+            }}
+          >
+            Delete
+          </Button>
+          <Button variant="contained" sx={{ fontSize: 13 }}>
+            Duplicate
+          </Button>
+        </Box>
       </Box>
     );
   }
-
 
   let selectClass = "unselected-list-card";
   if (selected) {
@@ -137,17 +148,17 @@ function ListCard(props) {
       </Grid>
       <Grid Item md={1}>
         <Grid Item>
-          <div style={{ fontSize: 30 }}>0</div>
+          <div style={{ fontSize: 30 }}>{idNamePair.likes}</div>
         </Grid>
       </Grid>
       <Grid Item>
         <ThumbDownIcon fontSize="large" />
       </Grid>
       <Grid Item>
-        <div style={{ fontSize: 30, marginLeft: 5 }}>0</div>
+        <div style={{ fontSize: 30, marginLeft: 5 }}>{idNamePair.dislikes}</div>
       </Grid>
       <Grid Item md={12}>
-        <div style={{ fontSize: 20 }}>Published By: </div>
+        <div style={{ fontSize: 20 }}>Published By: {idNamePair.userName}</div>
       </Grid>
       <Grid Item md={12}>
         {songList}
@@ -156,7 +167,7 @@ function ListCard(props) {
         <div style={{ fontSize: 20 }}> Published: {formattedDate} </div>
       </Grid>
       <Grid Item sx={{ marginTop: 3 }} md={5}>
-        <div style={{ fontSize: 20 }}>Listens: 0</div>
+        <div style={{ fontSize: 20 }}>Listens: {idNamePair.listens}</div>
       </Grid>
       <Grid Item>{expandArrow}</Grid>
     </Grid>
