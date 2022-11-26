@@ -78,14 +78,16 @@ const HomeScreen = () => {
 
   if (store.currentList !== null) {
     comments = (
-      <List sx={{ top: "5%", width: "90%", left: "5%" }}>
+      <List sx={{ top: "5%", width: "90%", left: "5%", height:"85%", overflowY: "scroll" }}>
         {store.currentList.comments.map((comment) => (
           <div
             style={{
               backgroundColor: "lightgray",
-              borderRadius: 10,
+              borderRadius: 5,
               border: "2px solid black",
+              wordWrap: "break-word",
               margin: 10,
+              fontSize: 20
             }}
           >
             {comment.userName}: {comment.comment}
