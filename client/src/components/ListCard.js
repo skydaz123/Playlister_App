@@ -121,7 +121,7 @@ function ListCard(props) {
           >
             Delete
           </Button>
-          <Button variant="contained" sx={{ fontSize: 13 }}>
+          <Button variant="contained" sx={{ fontSize: 13 }} onClick={() => {store.duplicateList()}}>
             Duplicate
           </Button>
         </Box>

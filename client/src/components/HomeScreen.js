@@ -55,10 +55,21 @@ const HomeScreen = () => {
   }
 
   let listCard = "";
+
+  // FILTER THE LISTCARDS IF SEARCH BAR IS USED AND RETURN THE FILTERED CARDS
   if (store) {
-    listCard = (
+      let filteredListCards = store.idNamePairs.filter((pair) => {
+        if (store.filterName === "" || store.filterName === " "){
+          return pair;
+        }
+        else if (pair.name.toLowerCase().includes(store.filterName.toLowerCase())){
+          return pair;
+        }
+      })
+
+      listCard = (
       <List sx={{ top: "5%", width: "90%", left: "5%" }}>
-        {store.idNamePairs.map((pair) => (
+        {filteredListCards.map((pair) => (
           <div
             style={{
               backgroundColor: "lightgray",

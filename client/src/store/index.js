@@ -31,6 +31,7 @@ export const GlobalStoreActionType = {
   EDIT_SONG: "EDIT_SONG",
   REMOVE_SONG: "REMOVE_SONG",
   HIDE_MODALS: "HIDE_MODALS",
+  SET_FILTER: "SET_FILTER",
 };
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -58,6 +59,7 @@ function GlobalStoreContextProvider(props) {
     listNameActive: false,
     listIdMarkedForDeletion: null,
     listMarkedForDeletion: null,
+    filterName: "",
   });
   const history = useHistory();
 
@@ -84,6 +86,7 @@ function GlobalStoreContextProvider(props) {
           listNameActive: false,
           listIdMarkedForDeletion: null,
           listMarkedForDeletion: null,
+          filterName: store.filterName,
         });
       }
       // STOP EDITING THE CURRENT LIST
@@ -98,6 +101,7 @@ function GlobalStoreContextProvider(props) {
           listNameActive: false,
           listIdMarkedForDeletion: null,
           listMarkedForDeletion: null,
+          filterName: store.filterName,
         });
       }
       // CREATE A NEW LIST
@@ -112,6 +116,7 @@ function GlobalStoreContextProvider(props) {
           listNameActive: false,
           listIdMarkedForDeletion: null,
           listMarkedForDeletion: null,
+          filterName: store.filterName,
         });
       }
       // GET ALL THE LISTS SO WE CAN PRESENT THEM
@@ -126,6 +131,7 @@ function GlobalStoreContextProvider(props) {
           listNameActive: false,
           listIdMarkedForDeletion: null,
           listMarkedForDeletion: null,
+          filterName: store.filterName,
         });
       }
       // PREPARE TO DELETE A LIST
@@ -140,6 +146,7 @@ function GlobalStoreContextProvider(props) {
           listNameActive: false,
           listIdMarkedForDeletion: payload.id,
           listMarkedForDeletion: payload.playlist,
+          filterName: store.filterName,
         });
       }
       // UPDATE A LIST
@@ -154,6 +161,7 @@ function GlobalStoreContextProvider(props) {
           listNameActive: false,
           listIdMarkedForDeletion: null,
           listMarkedForDeletion: null,
+          filterName: store.filterName,
         });
       }
       // START EDITING A LIST NAME
@@ -168,6 +176,7 @@ function GlobalStoreContextProvider(props) {
           listNameActive: true,
           listIdMarkedForDeletion: null,
           listMarkedForDeletion: null,
+          filterName: store.filterName,
         });
       }
       //
@@ -182,6 +191,7 @@ function GlobalStoreContextProvider(props) {
           listNameActive: false,
           listIdMarkedForDeletion: null,
           listMarkedForDeletion: null,
+          filterName: store.filterName,
         });
       }
       case GlobalStoreActionType.REMOVE_SONG: {
@@ -195,6 +205,7 @@ function GlobalStoreContextProvider(props) {
           listNameActive: false,
           listIdMarkedForDeletion: null,
           listMarkedForDeletion: null,
+          filterName: store.filterName,
         });
       }
       case GlobalStoreActionType.ERROR_MODAL: {
@@ -208,6 +219,7 @@ function GlobalStoreContextProvider(props) {
           listNameActive: false,
           listIdMarkedForDeletion: null,
           listMarkedForDeletion: null,
+          filterName: store.filterName,
         });
       }
       case GlobalStoreActionType.HIDE_MODALS: {
@@ -221,6 +233,21 @@ function GlobalStoreContextProvider(props) {
           listNameActive: false,
           listIdMarkedForDeletion: null,
           listMarkedForDeletion: null,
+          filterName: store.filterName,
+        });
+      }
+      case GlobalStoreActionType.SET_FILTER: {
+        return setStore({
+          currentModal: CurrentModal.NONE,
+          idNamePairs: store.idNamePairs,
+          currentList: store.currentList,
+          currentSongIndex: -1,
+          currentSong: null,
+          newListCounter: store.newListCounter,
+          listNameActive: false,
+          listIdMarkedForDeletion: null,
+          listMarkedForDeletion: null,
+          filterName: payload,
         });
       }
       default:
@@ -232,7 +259,14 @@ function GlobalStoreContextProvider(props) {
   // DRIVE THE STATE OF THE APPLICATION. WE'LL CALL THESE IN
   // RESPONSE TO EVENTS INSIDE OUR COMPONENTS.
 
+  store.setFilter = function (value) {
+    storeReducer({
+      type: GlobalStoreActionType.SET_FILTER,
+      payload: value,
+    });
+  };
   // THIS FUNCTION PROCESSES CHANGING A LIST NAME
+
   store.changeListName = function (id, newName) {
     // GET THE LIST
     async function asyncChangeListName(id) {
@@ -277,15 +311,15 @@ function GlobalStoreContextProvider(props) {
     history.push("/");
   };
 
-  store.addComment = function(userName, comment) {
+  store.addComment = function (userName, comment) {
     console.log("COMMENT IS: " + comment);
     const newComment = {
       userName: userName,
-      comment: comment
-    }
+      comment: comment,
+    };
     store.currentList.comments.push(newComment);
     store.updateCurrentList();
-  }
+  };
   // THIS FUNCTION CREATES A NEW LIST
   store.createNewList = function (userName) {
     async function asyncCreateNewList() {
@@ -294,10 +328,10 @@ function GlobalStoreContextProvider(props) {
         newListName,
         userName,
         [],
-        auth.user.email,
+        auth.user.email
       );
       //(newListName, userName, newSongs, userEmail)
-      console.log("USERNAME TO INPUT IS :" + userName)
+      console.log("USERNAME TO INPUT IS :" + userName);
       console.log("createNewList response: " + response);
       tps.clearAllTransactions();
       let newList = response.data.playlist;
@@ -311,7 +345,26 @@ function GlobalStoreContextProvider(props) {
     asyncCreateNewList();
   };
 
-  
+  store.duplicateList = function () {
+    async function asyncDuplicateList() {
+      let newListName = "Copy of " + store.currentList.name;
+      const response = await api.createPlaylist(
+        newListName,
+        auth.user.userName,
+        store.currentList.songs,
+        auth.user.email
+      );
+      tps.clearAllTransactions();
+      let newList = response.data.playlist;
+      storeReducer({
+        type: GlobalStoreActionType.CREATE_NEW_LIST,
+        payload: newList,
+      });
+      store.loadIdNamePairs();
+      history.push("/");
+    }
+    asyncDuplicateList();
+  };
 
   // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
   store.loadIdNamePairs = function () {
@@ -546,8 +599,7 @@ function GlobalStoreContextProvider(props) {
           payload: store.currentList,
         });
         console.log("SUCCESSFULLY UPDATED LIST");
-      }
-      else{
+      } else {
         console.log("FAILED TO UPDATE LIST");
       }
     }
