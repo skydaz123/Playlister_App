@@ -15,7 +15,7 @@ import WorkspaceScreen from "./WorkspaceScreen";
 import EditToolbar from "./EditToolbar";
 import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp";
 import Button from "@mui/material/Button";
-import AuthContext from '../auth';
+import AuthContext from "../auth";
 
 function ListCard(props) {
   const { auth } = useContext(AuthContext);
@@ -104,7 +104,7 @@ function ListCard(props) {
 
     songList = (
       <Box sx={{ backgroundColor: "darkgray", height: 285 }}>
-        <Box sx={{ height:250, maxHeight: 250, overflowY: "scroll" }}>
+        <Box sx={{ height: 250, maxHeight: 250, overflowY: "scroll" }}>
           <WorkspaceScreen />
         </Box>
         <Box>
@@ -121,7 +121,13 @@ function ListCard(props) {
           >
             Delete
           </Button>
-          <Button variant="contained" sx={{ fontSize: 13 }} onClick={() => {store.duplicateList()}}>
+          <Button
+            variant="contained"
+            sx={{ fontSize: 13 }}
+            onClick={() => {
+              store.duplicateList();
+            }}
+          >
             Duplicate
           </Button>
         </Box>
@@ -138,10 +144,12 @@ function ListCard(props) {
     cardStatus = true;
   }
 
+
+
   let cardElement = (
     <Grid container style={{ marginTop: 10 }}>
       <Grid Item md={8}>
-        <div style={{ fontSize: 40 }}>{idNamePair.name}</div>
+        <div style={{ fontSize: 40 }} onDoubleClick={handleToggleEdit}>{idNamePair.name}</div>
       </Grid>
       <Grid Item md={1}>
         <ThumbUpIcon fontSize="large" />

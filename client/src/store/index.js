@@ -32,6 +32,7 @@ export const GlobalStoreActionType = {
   REMOVE_SONG: "REMOVE_SONG",
   HIDE_MODALS: "HIDE_MODALS",
   SET_FILTER: "SET_FILTER",
+  SET_SORT: "SET_SORT",
 };
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -45,12 +46,22 @@ const CurrentModal = {
   ERROR_MODAL: "ERROR_MODAL",
 };
 
+const CurrentSort = {
+  NONE: "NONE",
+  NAMES: "NAMES",
+  DATES: "DATES",
+  LISTENS: "LISTENS",
+  LIKES: "LIKES",
+  DISLIKES: "DISLIKES",
+}
+
 // WITH THIS WE'RE MAKING OUR GLOBAL DATA STORE
 // AVAILABLE TO THE REST OF THE APPLICATION
 function GlobalStoreContextProvider(props) {
   // THESE ARE ALL THE THINGS OUR DATA STORE WILL MANAGE
   const [store, setStore] = useState({
     currentModal: CurrentModal.NONE,
+    currentSort: CurrentSort.NONE,
     idNamePairs: [],
     currentList: null,
     currentSongIndex: -1,
@@ -78,6 +89,7 @@ function GlobalStoreContextProvider(props) {
       case GlobalStoreActionType.CHANGE_LIST_NAME: {
         return setStore({
           currentModal: CurrentModal.NONE,
+          currentSort: store.currentSort,
           idNamePairs: payload.idNamePairs,
           currentList: payload.playlist,
           currentSongIndex: -1,
@@ -93,6 +105,7 @@ function GlobalStoreContextProvider(props) {
       case GlobalStoreActionType.CLOSE_CURRENT_LIST: {
         return setStore({
           currentModal: CurrentModal.NONE,
+          currentSort: store.currentSort,
           idNamePairs: store.idNamePairs,
           currentList: null,
           currentSongIndex: -1,
@@ -108,6 +121,7 @@ function GlobalStoreContextProvider(props) {
       case GlobalStoreActionType.CREATE_NEW_LIST: {
         return setStore({
           currentModal: CurrentModal.NONE,
+          currentSort: store.currentSort,
           idNamePairs: store.idNamePairs,
           currentList: payload,
           currentSongIndex: -1,
@@ -123,6 +137,7 @@ function GlobalStoreContextProvider(props) {
       case GlobalStoreActionType.LOAD_ID_NAME_PAIRS: {
         return setStore({
           currentModal: CurrentModal.NONE,
+          currentSort: store.currentSort,
           idNamePairs: payload,
           currentList: null,
           currentSongIndex: -1,
@@ -138,6 +153,7 @@ function GlobalStoreContextProvider(props) {
       case GlobalStoreActionType.MARK_LIST_FOR_DELETION: {
         return setStore({
           currentModal: CurrentModal.DELETE_LIST,
+          currentSort: store.currentSort,
           idNamePairs: store.idNamePairs,
           currentList: null,
           currentSongIndex: -1,
@@ -153,6 +169,7 @@ function GlobalStoreContextProvider(props) {
       case GlobalStoreActionType.SET_CURRENT_LIST: {
         return setStore({
           currentModal: CurrentModal.NONE,
+          currentSort: store.currentSort,
           idNamePairs: store.idNamePairs,
           currentList: payload,
           currentSongIndex: -1,
@@ -168,6 +185,7 @@ function GlobalStoreContextProvider(props) {
       case GlobalStoreActionType.SET_LIST_NAME_EDIT_ACTIVE: {
         return setStore({
           currentModal: CurrentModal.NONE,
+          currentSort: store.currentSort,
           idNamePairs: store.idNamePairs,
           currentList: payload,
           currentSongIndex: -1,
@@ -183,6 +201,7 @@ function GlobalStoreContextProvider(props) {
       case GlobalStoreActionType.EDIT_SONG: {
         return setStore({
           currentModal: CurrentModal.EDIT_SONG,
+          currentSort: store.currentSort,
           idNamePairs: store.idNamePairs,
           currentList: store.currentList,
           currentSongIndex: payload.currentSongIndex,
@@ -197,6 +216,7 @@ function GlobalStoreContextProvider(props) {
       case GlobalStoreActionType.REMOVE_SONG: {
         return setStore({
           currentModal: CurrentModal.REMOVE_SONG,
+          currentSort: store.currentSort,
           idNamePairs: store.idNamePairs,
           currentList: store.currentList,
           currentSongIndex: payload.currentSongIndex,
@@ -211,6 +231,7 @@ function GlobalStoreContextProvider(props) {
       case GlobalStoreActionType.ERROR_MODAL: {
         return setStore({
           currentModal: CurrentModal.ERROR_MODAL,
+          currentSort: store.currentSort,
           idNamePairs: null,
           currentList: null,
           currentSongIndex: null,
@@ -225,6 +246,7 @@ function GlobalStoreContextProvider(props) {
       case GlobalStoreActionType.HIDE_MODALS: {
         return setStore({
           currentModal: CurrentModal.NONE,
+          currentSort: store.currentSort,
           idNamePairs: store.idNamePairs,
           currentList: store.currentList,
           currentSongIndex: -1,
@@ -239,6 +261,7 @@ function GlobalStoreContextProvider(props) {
       case GlobalStoreActionType.SET_FILTER: {
         return setStore({
           currentModal: CurrentModal.NONE,
+          currentSort: store.currentSort,
           idNamePairs: store.idNamePairs,
           currentList: store.currentList,
           currentSongIndex: -1,
@@ -248,6 +271,21 @@ function GlobalStoreContextProvider(props) {
           listIdMarkedForDeletion: null,
           listMarkedForDeletion: null,
           filterName: payload,
+        });
+      }
+      case GlobalStoreActionType.SET_SORT: {
+        return setStore({
+          currentModal: CurrentModal.NONE,
+          currentSort: payload,
+          idNamePairs: store.idNamePairs,
+          currentList: store.currentList,
+          currentSongIndex: -1,
+          currentSong: null,
+          newListCounter: store.newListCounter,
+          listNameActive: false,
+          listIdMarkedForDeletion: null,
+          listMarkedForDeletion: null,
+          filterName: store.filterName,
         });
       }
       default:
@@ -265,6 +303,35 @@ function GlobalStoreContextProvider(props) {
       payload: value,
     });
   };
+
+  store.setSort = function (sort) {
+    console.log("SORT VALUE IS: " + sort);
+    storeReducer({
+      type: GlobalStoreActionType.SET_SORT,
+      payload: sort,
+    });
+  };
+
+  store.sort = function () {
+    let list = store.idNamePairs;
+    console.log("SORT IS SET TO: " + store.currentSort);
+    if (store.currentSort === CurrentSort.NAMES){
+      list = list.sort((a, b) => a.name.localeCompare(b.name));
+    }
+    /*else if (store.currentSort === CurrentSort.DATES){
+      array.sort((a,b) => new Date(b.date) - new Date(a.date));
+    }*/
+    else if (store.currentSort === CurrentSort.LIKES){
+      list = list.sort((a, b) => a.listens > b.listens ? 1 : -1);
+    }
+    else if (store.currentSort === CurrentSort.LIKES){
+      list = list.sort((a, b) => a.likes > b.likes ? 1 : -1);
+    }
+    else if (store.currentSort === CurrentSort.DISLIKES){
+      list = list.sort((a, b) => a.dislikes > b.dislikes ? 1 : -1);
+    }
+    return list;
+  }
   // THIS FUNCTION PROCESSES CHANGING A LIST NAME
 
   store.changeListName = function (id, newName) {

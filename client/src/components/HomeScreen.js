@@ -7,10 +7,10 @@ import Grid from "@mui/material/Grid";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Paper from "@mui/material/Paper";
+//import { YouTubePlayerExample } from "../YouTubePlaylisterReact/src/PlaylisterYouTubePlayer";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import AppBanner from "./AppBanner";
 import MenuBanner from "./MenuBanner";
-import { sizing } from "@mui/system";
 
 import AddIcon from "@mui/icons-material/Add";
 import Fab from "@mui/material/Fab";
@@ -58,16 +58,19 @@ const HomeScreen = () => {
 
   // FILTER THE LISTCARDS IF SEARCH BAR IS USED AND RETURN THE FILTERED CARDS
   if (store) {
-      let filteredListCards = store.idNamePairs.filter((pair) => {
-        if (store.filterName === "" || store.filterName === " "){
-          return pair;
-        }
-        else if (pair.name.toLowerCase().includes(store.filterName.toLowerCase())){
-          return pair;
-        }
-      })
+    console.log("SORT IN HOME IS: " + store.currentSort);
+    let sortedListCards = store.sort();
+    let filteredListCards = sortedListCards.filter((pair) => {
+      if (store.filterName === "" || store.filterName === " ") {
+        return pair;
+      } else if (
+        pair.name.toLowerCase().includes(store.filterName.toLowerCase())
+      ) {
+        return pair;
+      }
+    });
 
-      listCard = (
+    listCard = (
       <List sx={{ top: "5%", width: "90%", left: "5%" }}>
         {filteredListCards.map((pair) => (
           <div
@@ -89,7 +92,15 @@ const HomeScreen = () => {
 
   if (store.currentList !== null) {
     comments = (
-      <List sx={{ top: "5%", width: "90%", left: "5%", height:"85%", overflowY: "scroll" }}>
+      <List
+        sx={{
+          top: "5%",
+          width: "90%",
+          left: "5%",
+          height: "85%",
+          overflowY: "scroll",
+        }}
+      >
         {store.currentList.comments.map((comment) => (
           <div
             style={{
@@ -98,7 +109,7 @@ const HomeScreen = () => {
               border: "2px solid black",
               wordWrap: "break-word",
               margin: 10,
-              fontSize: 20
+              fontSize: 20,
             }}
           >
             {comment.userName}: {comment.comment}

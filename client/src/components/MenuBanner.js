@@ -25,6 +25,16 @@ export default function MenuBanner() {
   const [anchorEl, setAnchorEl] = useState(null);
   const isMenuOpen = Boolean(anchorEl);
   const [filter, setFilter] = useState("");
+
+  const CurrentSort = {
+    NONE: "NONE",
+    NAMES: "NAMES",
+    DATES: "DATES",
+    LISTENS: "LISTENS",
+    LIKES: "LIKES",
+    DISLIKES: "DISLIKES",
+  };
+
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -33,10 +43,25 @@ export default function MenuBanner() {
     setAnchorEl(null);
   };
 
-  const handleLogout = () => {
+  const handleSortNames = () => {
+    store.setSort(CurrentSort.NAMES);
     handleMenuClose();
-    store.clearAllTransactions();
-    auth.logoutUser();
+  };
+  const handleSortDate = () => {
+    store.setSort(CurrentSort.DATES);
+    handleMenuClose();
+  };
+  const handleSortListens = () => {
+    store.setSort(CurrentSort.LISTENS);
+    handleMenuClose();
+  };
+  const handleSortLikes = () => {
+    store.setSort(CurrentSort.LIKES);
+    handleMenuClose();
+  };
+  const handleSortDislikes = () => {
+    store.setSort(CurrentSort.DISLIKES);
+    handleMenuClose();
   };
 
   useEffect(() => {
@@ -50,7 +75,8 @@ export default function MenuBanner() {
   };
 
   const menuId = "primary-search-account-menu";
-  const loggedOutMenu = (
+
+  const sortMenu = (
     <Menu
       anchorEl={anchorEl}
       anchorOrigin={{
@@ -66,49 +92,32 @@ export default function MenuBanner() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>
-        <Link to="/login/">Login</Link>
+      <MenuItem onClick={handleSortNames} sx={{ border: "1px solid black" }}>
+        Name (A - Z)
       </MenuItem>
-      <MenuItem onClick={handleMenuClose}>
-        <Link to="/register/">Create New Account</Link>
+      <MenuItem onClick={handleSortDate} sx={{ border: "1px solid black" }}>
+        Publish Date (Newest){" "}
       </MenuItem>
-    </Menu>
-  );
-  const loggedInMenu = (
-    <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{
-        vertical: "top",
-        horizontal: "right",
-      }}
-      open={isMenuOpen}
-      onClose={handleMenuClose}
-    >
-      <MenuItem onClick={handleLogout}>Logout</MenuItem>
+      <MenuItem onClick={handleSortListens} sx={{ border: "1px solid black" }}>
+        Listens (High - Low)
+      </MenuItem>
+      <MenuItem onClick={handleSortLikes} sx={{ border: "1px solid black" }}>
+        Likes (High - Low)
+      </MenuItem>
+      <MenuItem onClick={handleSortDislikes} sx={{ border: "1px solid black" }}>
+        Dislikes (High - Low)
+      </MenuItem>
     </Menu>
   );
 
-  let editToolbar = "";
-  let menu = loggedOutMenu;
+  let menu = sortMenu;
+  /*let menu = loggedOutMenu;
   if (auth.loggedIn) {
     menu = loggedInMenu;
     if (store.currentList) {
       editToolbar = <EditToolbar />;
     }
-  }
-
-  function getAccountMenu(loggedIn) {
-    let userInitials = auth.getUserInitials();
-    console.log("userInitials: " + userInitials);
-    if (loggedIn) return <div>{userInitials}</div>;
-    else return <AccountCircle />;
-  }
+  }*/
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -157,11 +166,20 @@ export default function MenuBanner() {
           <Typography variant="h4" sx={{ marginLeft: "auto", marginTop: 1 }}>
             <div style={{ fontSize: 20 }}>SORT BY</div>
           </Typography>
-          <SortIcon
-            sx={{ marginLeft: 1, marginTop: 1, fontSize: 40 }}
-          ></SortIcon>
+          <IconButton
+            edge="end"
+            aria-label="sort for lists"
+            aria-controls={menuId}
+            aria-haspopup="true"
+            onClick={handleProfileMenuOpen}
+          >
+            <SortIcon
+              sx={{ marginLeft: 1, marginTop: 1, fontSize: 40 }}
+            ></SortIcon>
+          </IconButton>
         </Toolbar>
       </AppBar>
+      {menu}
     </Box>
   );
 }
