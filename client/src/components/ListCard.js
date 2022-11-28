@@ -102,38 +102,70 @@ function ListCard(props) {
       </IconButton>
     );
 
-    songList = (
-      <Box sx={{ backgroundColor: "darkgray", height: 285 }}>
-        <Box sx={{ height: 250, maxHeight: 250, overflowY: "scroll" }}>
-          <WorkspaceScreen />
+    if (!idNamePair.published) {
+      songList = (
+        <Box sx={{ backgroundColor: "darkgray", height: 285 }}>
+          <Box sx={{ height: 250, maxHeight: 250, overflowY: "scroll" }}>
+            <WorkspaceScreen />
+          </Box>
+          <Box>
+            <EditToolbar />
+            <Button variant="contained" sx={{ fontSize: 13 }} onClick={() => { store.publishList(idNamePair._id) }}>
+              Publish
+            </Button>
+            <Button
+              variant="contained"
+              sx={{ fontSize: 13 }}
+              onClick={() => {
+                handleDeleteList(idNamePair._id);
+              }}
+            >
+              Delete
+            </Button>
+            <Button
+              variant="contained"
+              sx={{ fontSize: 13 }}
+              onClick={() => {
+                store.duplicateList();
+              }}
+            >
+              Duplicate
+            </Button>
+          </Box>
         </Box>
-        <Box>
-          <EditToolbar />
-          <Button variant="contained" sx={{ fontSize: 13 }}>
-            Publish
-          </Button>
-          <Button
-            variant="contained"
-            sx={{ fontSize: 13 }}
-            onClick={() => {
-              handleDeleteList(idNamePair._id);
-            }}
-          >
-            Delete
-          </Button>
-          <Button
-            variant="contained"
-            sx={{ fontSize: 13 }}
-            onClick={() => {
-              store.duplicateList();
-            }}
-          >
-            Duplicate
-          </Button>
+      );
+    }
+    else {
+      songList = (
+        <Box sx={{ backgroundColor: "darkgray", height: 285 }}>
+          <Box sx={{ height: 250, maxHeight: 250, overflowY: "scroll" }}>
+            <WorkspaceScreen />
+          </Box>
+          <Box>
+            <Button
+              variant="contained"
+              sx={{ fontSize: 13 }}
+              onClick={() => {
+                handleDeleteList(idNamePair._id);
+              }}
+            >
+              Delete
+            </Button>
+            <Button
+              variant="contained"
+              sx={{ fontSize: 13 }}
+              onClick={() => {
+                store.duplicateList();
+              }}
+            >
+              Duplicate
+            </Button>
+          </Box>
         </Box>
-      </Box>
-    );
+      );
+    }
   }
+
 
   let selectClass = "unselected-list-card";
   if (selected) {
@@ -152,22 +184,22 @@ function ListCard(props) {
         <div style={{ fontSize: 40 }} onDoubleClick={handleToggleEdit}>{idNamePair.name}</div>
       </Grid>
       <Grid Item md={1}>
-        <IconButton onClick={() => {store.likeList(idNamePair._id)}}>
+        <IconButton onClick={() => { store.likeList(idNamePair._id) }}>
           <ThumbUpIcon fontSize="large" />
         </IconButton>
       </Grid>
       <Grid Item md={1}>
         <Grid Item>
-          <div style={{ fontSize: 30, marginTop:4 }}>{idNamePair.likes}</div>
+          <div style={{ fontSize: 30, marginTop: 4 }}>{idNamePair.likes}</div>
         </Grid>
       </Grid>
       <Grid Item>
-      <IconButton onClick={() => {store.dislikeList(idNamePair._id)}}>
+        <IconButton onClick={() => { store.dislikeList(idNamePair._id) }}>
           <ThumbDownIcon fontSize="large" />
         </IconButton>
       </Grid>
       <Grid Item>
-        <div style={{ fontSize: 30, marginLeft: 5, marginTop:3 }}>{idNamePair.dislikes}</div>
+        <div style={{ fontSize: 30, marginLeft: 5, marginTop: 3 }}>{idNamePair.dislikes}</div>
       </Grid>
       <Grid Item md={12}>
         <div style={{ fontSize: 20 }}>Published By: {idNamePair.userName}</div>
@@ -176,7 +208,7 @@ function ListCard(props) {
         {songList}
       </Grid>
       <Grid Item md={5} sx={{ marginTop: 3 }}>
-        <div style={{ fontSize: 20 }}> Published: {formattedDate} </div>
+        <div style={{ fontSize: 20 }}> Published: {idNamePair.publishDate} </div>
       </Grid>
       <Grid Item sx={{ marginTop: 3 }} md={5}>
         <div style={{ fontSize: 20 }}>Listens: {idNamePair.listens}</div>

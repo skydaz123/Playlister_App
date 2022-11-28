@@ -131,6 +131,7 @@ getPlaylistPairs = async (req, res) => {
                         let pair = {
                             _id: list._id,
                             name: list.name,
+                            userName: list.userName,
                             date: list.createdAt,
                             likes: list.likes,
                             dislikes: list.dislikes,
@@ -195,6 +196,7 @@ updatePlaylist = async (req, res) => {
                     console.log("req.body.name: " + req.body.name);
 
                     list.name = body.playlist.name;
+                    list.userName = body.playlist.userName;
                     list.songs = body.playlist.songs;
                     list.comments = body.playlist.comments;
                     list.likes = body.playlist.likes;

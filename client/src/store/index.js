@@ -368,26 +368,16 @@ function GlobalStoreContextProvider(props) {
     asyncChangeListName(id);
   };
 
-  store.likeList = function (id) {
+  store.publishList = function (id) {
     // GET THE LIST
     async function asyncLikeList(id) {
       let response = await api.getPlaylistById(id);
       if (response.data.success) {
         let playlist = response.data.playlist;
-        let userNameLikes = playlist.userLikes;
-        console.log("USERNAMELIKES SIZE IS: " + userNameLikes.length);
-        console.log(JSON.stringify(userNameLikes));
-        for (let index = 0; index < userNameLikes.length; index++) {
-          console.log("USERNAME IS: " + JSON.stringify(userNameLikes[index]));
-          if (userNameLikes[index].userName === auth.user.userName) {
-            return;
-          }
-        }
-        playlist.likes += 1;
-        let newUserName = {
-          userName: auth.user.name
-        }
-        playlist.userLikes.push(newUserName);
+        playlist.published = true;
+        playlist.publishDate = new Date().toLocaleDateString();
+        playlist.userName = auth.user.userName;
+        console.log("PUBLISHING USER NAME IS: " + auth.user.userName);
         async function updateList(playlist) {
           response = await api.updatePlaylistById(playlist._id, playlist);
           if (response.data.success) {
@@ -430,7 +420,7 @@ function GlobalStoreContextProvider(props) {
         }
         playlist.dislikes += 1;
         let newUserName = {
-          userName: auth.user.name
+          userName: auth.user.userName
         }
         playlist.userDislikes.push(newUserName);
         async function updateList(playlist) {
@@ -459,7 +449,7 @@ function GlobalStoreContextProvider(props) {
   };
 
 
-  store.publishList = function (id) {
+  store.likeList = function (id) {
     // GET THE LIST
     async function asyncLikeList(id) {
       let response = await api.getPlaylistById(id);
@@ -475,7 +465,7 @@ function GlobalStoreContextProvider(props) {
         }
         playlist.likes += 1;
         let newUserName = {
-          userName: auth.user.name
+          userName: auth.user.userName
         }
         playlist.userLikes.push(newUserName);
         async function updateList(playlist) {
@@ -541,7 +531,7 @@ function GlobalStoreContextProvider(props) {
     store.updateCurrentList();
   };
   // THIS FUNCTION CREATES A NEW LIST
-  store.createNewList = function (userName) {
+  store.createNewList = function () {
     async function asyncCreateNewList() {
       let newListName = "Untitled" + store.newListCounter;
       const response = await api.createPlaylist(
@@ -550,7 +540,6 @@ function GlobalStoreContextProvider(props) {
         auth.user.email
       );
       //(newListName, userName, newSongs, userEmail)
-      console.log("USERNAME TO INPUT IS :" + userName);
       console.log("createNewList response: " + response);
       tps.clearAllTransactions();
       let newList = response.data.playlist;
@@ -573,7 +562,6 @@ function GlobalStoreContextProvider(props) {
       }
       const response = await api.createPlaylist(
         newListName,
-        auth.user.userName,
         store.currentList.songs,
         auth.user.email
       );
