@@ -138,6 +138,8 @@ getPlaylistPairs = async (req, res) => {
                             comments: list.comments,
                             listens: list.listens,
                             userName: list.userName
+                            userLikes: list.userLikes,
+                            userDislikes: list.userDislikes
                         };
                         pairs.push(pair);
                     }
