@@ -315,20 +315,22 @@ function GlobalStoreContextProvider(props) {
   store.sort = function () {
     let list = store.idNamePairs;
     console.log("SORT IS SET TO: " + store.currentSort);
-    if (store.currentSort === CurrentSort.NAMES){
+    if (store.currentSort === CurrentSort.NAMES) {
+      console.log("HIT SORT NAMES");
       list = list.sort((a, b) => a.name.localeCompare(b.name));
     }
     /*else if (store.currentSort === CurrentSort.DATES){
       array.sort((a,b) => new Date(b.date) - new Date(a.date));
     }*/
-    else if (store.currentSort === CurrentSort.LIKES){
-      list = list.sort((a, b) => a.listens > b.listens ? 1 : -1);
+    else if (store.currentSort === CurrentSort.LISTENS) {
+      list = list.sort((a, b) => a.listens > b.listens ? -1 : 1);
     }
-    else if (store.currentSort === CurrentSort.LIKES){
-      list = list.sort((a, b) => a.likes > b.likes ? 1 : -1);
+    else if (store.currentSort === CurrentSort.LIKES) {
+      console.log("HIT SORT LIKES");
+      list = list.sort((a, b) => a.likes > b.likes ? -1 : 1);
     }
-    else if (store.currentSort === CurrentSort.DISLIKES){
-      list = list.sort((a, b) => a.dislikes > b.dislikes ? 1 : -1);
+    else if (store.currentSort === CurrentSort.DISLIKES) {
+      list = list.sort((a, b) => a.dislikes > b.dislikes ? -1 : 1);
     }
     return list;
   }
@@ -366,12 +368,150 @@ function GlobalStoreContextProvider(props) {
     asyncChangeListName(id);
   };
 
+  store.likeList = function (id) {
+    // GET THE LIST
+    async function asyncLikeList(id) {
+      let response = await api.getPlaylistById(id);
+      if (response.data.success) {
+        let playlist = response.data.playlist;
+        let userNameLikes = playlist.userLikes;
+        console.log("USERNAMELIKES SIZE IS: " + userNameLikes.length);
+        console.log(JSON.stringify(userNameLikes));
+        for (let index = 0; index < userNameLikes.length; index++) {
+          console.log("USERNAME IS: " + JSON.stringify(userNameLikes[index]));
+          if (userNameLikes[index].userName === auth.user.userName) {
+            return;
+          }
+        }
+        playlist.likes += 1;
+        let newUserName = {
+          userName: auth.user.name
+        }
+        playlist.userLikes.push(newUserName);
+        async function updateList(playlist) {
+          response = await api.updatePlaylistById(playlist._id, playlist);
+          if (response.data.success) {
+            async function getListPairs(playlist) {
+              response = await api.getPlaylistPairs();
+              if (response.data.success) {
+                let pairsArray = response.data.idNamePairs;
+                storeReducer({
+                  type: GlobalStoreActionType.CHANGE_LIST_NAME,
+                  payload: {
+                    idNamePairs: pairsArray,
+                    playlist: playlist,
+                  },
+                });
+              }
+            }
+            getListPairs(playlist);
+          }
+        }
+        updateList(playlist);
+      }
+    }
+    asyncLikeList(id);
+  };
+
+
+  store.dislikeList = function (id) {
+    // GET THE LIST
+    async function asyncDislikeList(id) {
+      let response = await api.getPlaylistById(id);
+      if (response.data.success) {
+        let playlist = response.data.playlist;
+        let userNameDislikes = playlist.userDislikes;
+        console.log("USERNAME DISLIKES SIZE IS: " + userNameDislikes.length);
+        for (let index = 0; index < userNameDislikes.length; index++) {
+          if (userNameDislikes[index].userName === auth.user.userName) {
+            console.log("USERNAME IS: " + userNameDislikes[index].userName);
+            return;
+          }
+        }
+        playlist.dislikes += 1;
+        let newUserName = {
+          userName: auth.user.name
+        }
+        playlist.userDislikes.push(newUserName);
+        async function updateList(playlist) {
+          response = await api.updatePlaylistById(playlist._id, playlist);
+          if (response.data.success) {
+            async function getListPairs(playlist) {
+              response = await api.getPlaylistPairs();
+              if (response.data.success) {
+                let pairsArray = response.data.idNamePairs;
+                storeReducer({
+                  type: GlobalStoreActionType.CHANGE_LIST_NAME,
+                  payload: {
+                    idNamePairs: pairsArray,
+                    playlist: playlist,
+                  },
+                });
+              }
+            }
+            getListPairs(playlist);
+          }
+        }
+        updateList(playlist);
+      }
+    }
+    asyncDislikeList(id);
+  };
+
+
+  store.publishList = function (id) {
+    // GET THE LIST
+    async function asyncLikeList(id) {
+      let response = await api.getPlaylistById(id);
+      if (response.data.success) {
+        let playlist = response.data.playlist;
+        let userNameLikes = playlist.userLikes;
+        console.log("USERNAMELIKES SIZE IS: " + userNameLikes.length);
+        for (let index = 0; index < userNameLikes.length; index++) {
+          if (userNameLikes[index].userName === auth.user.userName) {
+            console.log("USERNAME IS: " + userNameLikes[index].userName);
+            return;
+          }
+        }
+        playlist.likes += 1;
+        let newUserName = {
+          userName: auth.user.name
+        }
+        playlist.userLikes.push(newUserName);
+        async function updateList(playlist) {
+          response = await api.updatePlaylistById(playlist._id, playlist);
+          if (response.data.success) {
+            async function getListPairs(playlist) {
+              response = await api.getPlaylistPairs();
+              if (response.data.success) {
+                let pairsArray = response.data.idNamePairs;
+                storeReducer({
+                  type: GlobalStoreActionType.CHANGE_LIST_NAME,
+                  payload: {
+                    idNamePairs: pairsArray,
+                    playlist: playlist,
+                  },
+                });
+              }
+            }
+            getListPairs(playlist);
+          }
+        }
+        updateList(playlist);
+      }
+    }
+    asyncLikeList(id);
+  };
+
+
+
+
   // CHECK IF THE LIST NAME TO PUT ALREADY EXISTS IN IDNAMEPAIRS 
 
   store.containsListName = function (name) {
     for (let index = 0; index < store.idNamePairs.length; index++) {
       let list = store.idNamePairs[index];
-      if (list.name === name){
+      if (list.name === name) {
         return true;
       }
     }
@@ -406,7 +546,6 @@ function GlobalStoreContextProvider(props) {
       let newListName = "Untitled" + store.newListCounter;
       const response = await api.createPlaylist(
         newListName,
-        userName,
         [],
         auth.user.email
       );
@@ -428,7 +567,7 @@ function GlobalStoreContextProvider(props) {
   store.duplicateList = function () {
     async function asyncDuplicateList() {
       let newListName = "Copy of " + store.currentList.name;
-      if (store.containsListName(newListName)){
+      if (store.containsListName(newListName)) {
         console.log("A copy already exists here when duplicating");
         newListName = "Copy of " + newListName;
       }
@@ -569,6 +708,9 @@ function GlobalStoreContextProvider(props) {
   store.getPlaylistSize = function () {
     return store.currentList.songs.length;
   };
+
+
+
   store.addNewSong = function () {
     let index = this.getPlaylistSize();
     this.addCreateSongTransaction(index, "Untitled", "?", "dQw4w9WgXcQ");
@@ -689,6 +831,7 @@ function GlobalStoreContextProvider(props) {
     }
     asyncUpdateCurrentList();
   };
+
   store.undo = function () {
     tps.undoTransaction();
   };

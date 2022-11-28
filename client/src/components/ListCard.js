@@ -152,18 +152,22 @@ function ListCard(props) {
         <div style={{ fontSize: 40 }} onDoubleClick={handleToggleEdit}>{idNamePair.name}</div>
       </Grid>
       <Grid Item md={1}>
-        <ThumbUpIcon fontSize="large" />
+        <IconButton onClick={() => {store.likeList(idNamePair._id)}}>
+          <ThumbUpIcon fontSize="large" />
+        </IconButton>
       </Grid>
       <Grid Item md={1}>
         <Grid Item>
-          <div style={{ fontSize: 30 }}>{idNamePair.likes}</div>
+          <div style={{ fontSize: 30, marginTop:4 }}>{idNamePair.likes}</div>
         </Grid>
       </Grid>
       <Grid Item>
-        <ThumbDownIcon fontSize="large" />
+      <IconButton onClick={() => {store.dislikeList(idNamePair._id)}}>
+          <ThumbDownIcon fontSize="large" />
+        </IconButton>
       </Grid>
       <Grid Item>
-        <div style={{ fontSize: 30, marginLeft: 5 }}>{idNamePair.dislikes}</div>
+        <div style={{ fontSize: 30, marginLeft: 5, marginTop:3 }}>{idNamePair.dislikes}</div>
       </Grid>
       <Grid Item md={12}>
         <div style={{ fontSize: 20 }}>Published By: {idNamePair.userName}</div>
