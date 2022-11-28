@@ -365,6 +365,19 @@ function GlobalStoreContextProvider(props) {
     }
     asyncChangeListName(id);
   };
+
+  // CHECK IF THE LIST NAME TO PUT ALREADY EXISTS IN IDNAMEPAIRS 
+
+  store.containsListName = function (name) {
+    for (let index = 0; index < store.idNamePairs.length; index++) {
+      let list = store.idNamePairs[index];
+      if (list.name === name){
+        return true;
+      }
+    }
+    return false;
+  }
+
   store.clearAllTransactions = function () {
     tps.clearAllTransactions();
   };
@@ -415,6 +428,10 @@ function GlobalStoreContextProvider(props) {
   store.duplicateList = function () {
     async function asyncDuplicateList() {
       let newListName = "Copy of " + store.currentList.name;
+      if (store.containsListName(newListName)){
+        console.log("A copy already exists here when duplicating");
+        newListName = "Copy of " + newListName;
+      }
       const response = await api.createPlaylist(
         newListName,
         auth.user.userName,
