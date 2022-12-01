@@ -4,12 +4,12 @@ import { GlobalStoreContext } from '../store'
 function SongCard(props) {
     const { store } = useContext(GlobalStoreContext);
     const [draggedTo, setDraggedTo] = useState(0);
-    const { song, index, isPublished } = props;
+    const { song, index } = props;
 
     let isDraggable = false;
 
     let deleteButton = "";
-    if (!isPublished) {
+    if (!store.currentList.published) {
         isDraggable = true;
         deleteButton = (
             <input
