@@ -157,7 +157,7 @@ export default function MenuBanner() {
       <MenuItem onClick={handleSortNames} sx={selectedSortNames}>
         Name (A - Z)
       </MenuItem>
-      <MenuItem onClick={handleSortDate} sx={selectedSortDate}>
+      <MenuItem onClick={handleSortDate} sx={selectedSortDate} disabled={store.currentTab === CurrentTab.HOME}>
         Publish Date (Newest){" "}
       </MenuItem>
       <MenuItem onClick={handleSortListens} sx={selectedSortListens}>

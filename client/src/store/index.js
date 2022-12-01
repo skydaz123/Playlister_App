@@ -347,7 +347,7 @@ function GlobalStoreContextProvider(props) {
       case GlobalStoreActionType.SWITCH_HOME_TAB: {
         return setStore({
           currentModal: CurrentModal.NONE,
-          currentSort: store.currentSort,
+          currentSort: CurrentSort.NONE,
           currentTab: CurrentTab.HOME,
           idNamePairs: store.idNamePairs,
           currentList: store.currentList,
@@ -467,9 +467,9 @@ function GlobalStoreContextProvider(props) {
       console.log("HIT SORT NAMES");
       list = list.sort((a, b) => a.name.localeCompare(b.name));
     }
-    /*else if (store.currentSort === CurrentSort.DATES){
-      array.sort((a,b) => new Date(b.date) - new Date(a.date));
-    }*/
+    else if (store.currentSort === CurrentSort.DATES){
+      list = list.sort((a,b) => new Date(a.publishDate) - new Date(b.publishDate));
+    }
     else if (store.currentSort === CurrentSort.LISTENS) {
       list = list.sort((a, b) => a.listens > b.listens ? -1 : 1);
     }
