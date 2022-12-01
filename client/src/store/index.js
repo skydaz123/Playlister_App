@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import jsTPS from "../common/jsTPS";
 import api from "./store-request-api";
@@ -27,12 +27,17 @@ export const GlobalStoreActionType = {
   LOAD_ID_NAME_PAIRS: "LOAD_ID_NAME_PAIRS",
   MARK_LIST_FOR_DELETION: "MARK_LIST_FOR_DELETION",
   SET_CURRENT_LIST: "SET_CURRENT_LIST",
+  SET_SELECTED_LIST: "SET_SELECTED_LIST",
   SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
   EDIT_SONG: "EDIT_SONG",
   REMOVE_SONG: "REMOVE_SONG",
   HIDE_MODALS: "HIDE_MODALS",
   SET_FILTER: "SET_FILTER",
   SET_SORT: "SET_SORT",
+  SWITCH_PLAYLISTS_TAB: "SET_PLAYLISTS_TAB",
+  SWITCH_USERS_TAB: "SWITCH_USERS_TAB",
+  SWITCH_HOME_TAB: "SWITCH_HOME_TAB",
+  LIKE_DISLIKE_LIST: "LIKE_DISLIKE_LIST"
 };
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -55,6 +60,12 @@ const CurrentSort = {
   DISLIKES: "DISLIKES",
 }
 
+const CurrentTab = {
+  HOME: "HOME",
+  PLAYLISTS: "PLAYLISTS",
+  USERS: "USERS"
+}
+
 // WITH THIS WE'RE MAKING OUR GLOBAL DATA STORE
 // AVAILABLE TO THE REST OF THE APPLICATION
 function GlobalStoreContextProvider(props) {
@@ -62,8 +73,10 @@ function GlobalStoreContextProvider(props) {
   const [store, setStore] = useState({
     currentModal: CurrentModal.NONE,
     currentSort: CurrentSort.NONE,
+    currentTab: CurrentTab.HOME,
     idNamePairs: [],
     currentList: null,
+    currentSelectedList: null,
     currentSongIndex: -1,
     currentSong: null,
     newListCounter: 0,
@@ -90,8 +103,10 @@ function GlobalStoreContextProvider(props) {
         return setStore({
           currentModal: CurrentModal.NONE,
           currentSort: store.currentSort,
-          idNamePairs: payload.idNamePairs,
-          currentList: payload.playlist,
+          currentTab: store.currentTab,
+          idNamePairs: store.idNamePairs,
+          currentList: store.currentList,
+          currentSelectedList: store.currentSelectedList,
           currentSongIndex: -1,
           currentSong: null,
           newListCounter: store.newListCounter,
@@ -106,8 +121,10 @@ function GlobalStoreContextProvider(props) {
         return setStore({
           currentModal: CurrentModal.NONE,
           currentSort: store.currentSort,
+          currentTab: store.currentTab,
           idNamePairs: store.idNamePairs,
           currentList: null,
+          currentSelectedList: store.currentSelectedList,
           currentSongIndex: -1,
           currentSong: null,
           newListCounter: store.newListCounter,
@@ -122,8 +139,10 @@ function GlobalStoreContextProvider(props) {
         return setStore({
           currentModal: CurrentModal.NONE,
           currentSort: store.currentSort,
+          currentTab: store.currentTab,
           idNamePairs: store.idNamePairs,
           currentList: payload,
+          currentSelectedList: store.currentSelectedList,
           currentSongIndex: -1,
           currentSong: null,
           newListCounter: store.newListCounter + 1,
@@ -138,8 +157,10 @@ function GlobalStoreContextProvider(props) {
         return setStore({
           currentModal: CurrentModal.NONE,
           currentSort: store.currentSort,
+          currentTab: store.currentTab,
           idNamePairs: payload,
-          currentList: null,
+          currentList: store.currentList,
+          currentSelectedList: store.currentSelectedList,
           currentSongIndex: -1,
           currentSong: null,
           newListCounter: store.newListCounter,
@@ -154,8 +175,10 @@ function GlobalStoreContextProvider(props) {
         return setStore({
           currentModal: CurrentModal.DELETE_LIST,
           currentSort: store.currentSort,
+          currentTab: store.currentTab,
           idNamePairs: store.idNamePairs,
           currentList: null,
+          currentSelectedList: store.currentSelectedList,
           currentSongIndex: -1,
           currentSong: null,
           newListCounter: store.newListCounter,
@@ -170,8 +193,10 @@ function GlobalStoreContextProvider(props) {
         return setStore({
           currentModal: CurrentModal.NONE,
           currentSort: store.currentSort,
+          currentTab: store.currentTab,
           idNamePairs: store.idNamePairs,
           currentList: payload,
+          currentSelectedList: store.currentSelectedList,
           currentSongIndex: -1,
           currentSong: null,
           newListCounter: store.newListCounter,
@@ -186,8 +211,10 @@ function GlobalStoreContextProvider(props) {
         return setStore({
           currentModal: CurrentModal.NONE,
           currentSort: store.currentSort,
+          currentTab: store.currentTab,
           idNamePairs: store.idNamePairs,
           currentList: payload,
+          currentSelectedList: store.currentSelectedList,
           currentSongIndex: -1,
           currentSong: null,
           newListCounter: store.newListCounter,
@@ -202,8 +229,10 @@ function GlobalStoreContextProvider(props) {
         return setStore({
           currentModal: CurrentModal.EDIT_SONG,
           currentSort: store.currentSort,
+          currentTab: store.currentTab,
           idNamePairs: store.idNamePairs,
           currentList: store.currentList,
+          currentSelectedList: store.currentSelectedList,
           currentSongIndex: payload.currentSongIndex,
           currentSong: payload.currentSong,
           newListCounter: store.newListCounter,
@@ -217,8 +246,10 @@ function GlobalStoreContextProvider(props) {
         return setStore({
           currentModal: CurrentModal.REMOVE_SONG,
           currentSort: store.currentSort,
+          currentTab: store.currentTab,
           idNamePairs: store.idNamePairs,
           currentList: store.currentList,
+          currentSelectedList: store.currentSelectedList,
           currentSongIndex: payload.currentSongIndex,
           currentSong: payload.currentSong,
           newListCounter: store.newListCounter,
@@ -232,8 +263,10 @@ function GlobalStoreContextProvider(props) {
         return setStore({
           currentModal: CurrentModal.ERROR_MODAL,
           currentSort: store.currentSort,
+          currentTab: store.currentTab,
           idNamePairs: null,
           currentList: null,
+          currentSelectedList: store.currentSelectedList,
           currentSongIndex: null,
           currentSong: null,
           newListCounter: null,
@@ -247,8 +280,10 @@ function GlobalStoreContextProvider(props) {
         return setStore({
           currentModal: CurrentModal.NONE,
           currentSort: store.currentSort,
+          currentTab: store.currentTab,
           idNamePairs: store.idNamePairs,
           currentList: store.currentList,
+          currentSelectedList: store.currentSelectedList,
           currentSongIndex: -1,
           currentSong: null,
           newListCounter: store.newListCounter,
@@ -262,8 +297,10 @@ function GlobalStoreContextProvider(props) {
         return setStore({
           currentModal: CurrentModal.NONE,
           currentSort: store.currentSort,
+          currentTab: store.currentTab,
           idNamePairs: store.idNamePairs,
           currentList: store.currentList,
+          currentSelectedList: store.currentSelectedList,
           currentSongIndex: -1,
           currentSong: null,
           newListCounter: store.newListCounter,
@@ -277,8 +314,95 @@ function GlobalStoreContextProvider(props) {
         return setStore({
           currentModal: CurrentModal.NONE,
           currentSort: payload,
+          currentTab: store.currentTab,
           idNamePairs: store.idNamePairs,
           currentList: store.currentList,
+          currentSelectedList: store.currentSelectedList,
+          currentSongIndex: -1,
+          currentSong: null,
+          newListCounter: store.newListCounter,
+          listNameActive: false,
+          listIdMarkedForDeletion: null,
+          listMarkedForDeletion: null,
+          filterName: store.filterName,
+        });
+      }
+      case GlobalStoreActionType.SET_SELECTED_LIST: {
+        return setStore({
+          currentModal: CurrentModal.NONE,
+          currentSort: store.currentSort,
+          currentTab: store.currentTab,
+          idNamePairs: store.idNamePairs,
+          currentList: store.currentList,
+          currentSelectedList: payload,
+          currentSongIndex: -1,
+          currentSong: null,
+          newListCounter: store.newListCounter,
+          listNameActive: false,
+          listIdMarkedForDeletion: null,
+          listMarkedForDeletion: null,
+          filterName: store.filterName,
+        });
+      }
+      case GlobalStoreActionType.SWITCH_HOME_TAB: {
+        return setStore({
+          currentModal: CurrentModal.NONE,
+          currentSort: store.currentSort,
+          currentTab: CurrentTab.HOME,
+          idNamePairs: store.idNamePairs,
+          currentList: store.currentList,
+          currentSelectedList: store.currentSelectedList,
+          currentSongIndex: -1,
+          currentSong: null,
+          newListCounter: store.newListCounter,
+          listNameActive: false,
+          listIdMarkedForDeletion: null,
+          listMarkedForDeletion: null,
+          filterName: store.filterName,
+        });
+      }
+      case GlobalStoreActionType.SWITCH_PLAYLISTS_TAB: {
+        return setStore({
+          currentModal: CurrentModal.NONE,
+          currentSort: store.currentSort,
+          currentTab: CurrentTab.PLAYLISTS,
+          idNamePairs: store.idNamePairs,
+          currentList: store.currentList,
+          currentSelectedList: store.currentSelectedList,
+          currentSongIndex: -1,
+          currentSong: null,
+          newListCounter: store.newListCounter,
+          listNameActive: false,
+          listIdMarkedForDeletion: null,
+          listMarkedForDeletion: null,
+          filterName: store.filterName,
+        });
+      }
+      case GlobalStoreActionType.SWITCH_USERS_TAB: {
+        return setStore({
+          currentModal: CurrentModal.NONE,
+          currentSort: store.currentSort,
+          currentTab: CurrentTab.USERS,
+          idNamePairs: store.idNamePairs,
+          currentList: store.currentList,
+          currentSelectedList: store.currentSelectedList,
+          currentSongIndex: -1,
+          currentSong: null,
+          newListCounter: store.newListCounter,
+          listNameActive: false,
+          listIdMarkedForDeletion: null,
+          listMarkedForDeletion: null,
+          filterName: store.filterName,
+        });
+      }
+      case GlobalStoreActionType.LIKE_DISLIKE_LIST: {
+        return setStore({
+          currentModal: CurrentModal.NONE,
+          currentSort: store.currentSort,
+          currentTab: CurrentTab.USERS,
+          idNamePairs: store.idNamePairs,
+          currentList: store.currentList,
+          currentSelectedList: store.currentSelectedList,
           currentSongIndex: -1,
           currentSong: null,
           newListCounter: store.newListCounter,
@@ -296,6 +420,30 @@ function GlobalStoreContextProvider(props) {
   // THESE ARE THE FUNCTIONS THAT WILL UPDATE OUR STORE AND
   // DRIVE THE STATE OF THE APPLICATION. WE'LL CALL THESE IN
   // RESPONSE TO EVENTS INSIDE OUR COMPONENTS.
+  useEffect(() => {
+    store.loadIdNamePairs();
+  }, [store.currentTab, store.currentSelectedList]);
+
+  store.switchHomeTab = function () {
+    storeReducer({
+      type: GlobalStoreActionType.SWITCH_HOME_TAB,
+      payload: {}
+    })
+  }
+
+  store.switchPlaylistsTab = function () {
+    storeReducer({
+      type: GlobalStoreActionType.SWITCH_PLAYLISTS_TAB,
+      payload: {}
+    })
+  }
+
+  store.switchUsersTab = function () {
+    storeReducer({
+      type: GlobalStoreActionType.SWITCH_USERS_TAB,
+      payload: {}
+    })
+  }
 
   store.setFilter = function (value) {
     storeReducer({
@@ -346,20 +494,10 @@ function GlobalStoreContextProvider(props) {
         async function updateList(playlist) {
           response = await api.updatePlaylistById(playlist._id, playlist);
           if (response.data.success) {
-            async function getListPairs(playlist) {
-              response = await api.getPlaylistPairs();
-              if (response.data.success) {
-                let pairsArray = response.data.idNamePairs;
-                storeReducer({
-                  type: GlobalStoreActionType.CHANGE_LIST_NAME,
-                  payload: {
-                    idNamePairs: pairsArray,
-                    playlist: playlist,
-                  },
-                });
-              }
+            async function getListPairs() {
+              store.loadIdNamePairs();
             }
-            getListPairs(playlist);
+            getListPairs();
           }
         }
         updateList(playlist);
@@ -381,20 +519,10 @@ function GlobalStoreContextProvider(props) {
         async function updateList(playlist) {
           response = await api.updatePlaylistById(playlist._id, playlist);
           if (response.data.success) {
-            async function getListPairs(playlist) {
-              response = await api.getPlaylistPairs();
-              if (response.data.success) {
-                let pairsArray = response.data.idNamePairs;
-                storeReducer({
-                  type: GlobalStoreActionType.CHANGE_LIST_NAME,
-                  payload: {
-                    idNamePairs: pairsArray,
-                    playlist: playlist,
-                  },
-                });
-              }
+            async function getListPairs() {
+              store.loadIdNamePairs();
             }
-            getListPairs(playlist);
+            getListPairs();
           }
         }
         updateList(playlist);
@@ -426,20 +554,10 @@ function GlobalStoreContextProvider(props) {
         async function updateList(playlist) {
           response = await api.updatePlaylistById(playlist._id, playlist);
           if (response.data.success) {
-            async function getListPairs(playlist) {
-              response = await api.getPlaylistPairs();
-              if (response.data.success) {
-                let pairsArray = response.data.idNamePairs;
-                storeReducer({
-                  type: GlobalStoreActionType.CHANGE_LIST_NAME,
-                  payload: {
-                    idNamePairs: pairsArray,
-                    playlist: playlist,
-                  },
-                });
-              }
+            async function getListPairs() {
+              store.loadIdNamePairs();
             }
-            getListPairs(playlist);
+            getListPairs();
           }
         }
         updateList(playlist);
@@ -471,20 +589,10 @@ function GlobalStoreContextProvider(props) {
         async function updateList(playlist) {
           response = await api.updatePlaylistById(playlist._id, playlist);
           if (response.data.success) {
-            async function getListPairs(playlist) {
-              response = await api.getPlaylistPairs();
-              if (response.data.success) {
-                let pairsArray = response.data.idNamePairs;
-                storeReducer({
-                  type: GlobalStoreActionType.CHANGE_LIST_NAME,
-                  payload: {
-                    idNamePairs: pairsArray,
-                    playlist: playlist,
-                  },
-                });
-              }
+            async function getListPairs() {
+              store.loadIdNamePairs();
             }
-            getListPairs(playlist);
+            getListPairs();
           }
         }
         updateList(playlist);
@@ -527,8 +635,17 @@ function GlobalStoreContextProvider(props) {
       userName: userName,
       comment: comment,
     };
-    store.currentList.comments.push(newComment);
-    store.updateCurrentList();
+    store.currentSelectedList.comments.push(newComment);
+    async function updateList(playlist) {
+      let response = await api.updatePlaylistById(playlist._id, playlist);
+      if (response.data.success) {
+        async function getListPairs() {
+          store.loadIdNamePairs();
+        }
+        getListPairs();
+      }
+    }
+    updateList(store.currentSelectedList);
   };
   // THIS FUNCTION CREATES A NEW LIST
   store.createNewList = function () {
@@ -580,7 +697,13 @@ function GlobalStoreContextProvider(props) {
   // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
   store.loadIdNamePairs = function () {
     async function asyncLoadIdNamePairs() {
-      const response = await api.getPlaylistPairs();
+      let response;
+      if (store.currentTab === CurrentTab.PLAYLISTS || store.currentTab === CurrentTab.USERS){
+        response = await api.getAllPlaylists();
+      }
+      else{
+        response = await api.getPlaylistPairs();
+      }
       if (response.data.success) {
         let pairsArray = response.data.idNamePairs;
         storeReducer({
@@ -677,22 +800,37 @@ function GlobalStoreContextProvider(props) {
       let response = await api.getPlaylistById(id);
       if (response.data.success) {
         let playlist = response.data.playlist;
-
-        response = await api.updatePlaylistById(playlist._id, playlist);
-        if (response.data.success) {
-          storeReducer({
-            type: GlobalStoreActionType.SET_CURRENT_LIST,
-            payload: playlist,
-          });
-          //history.push("/playlist/" + playlist._id);
-          //history.push("/");
-        }
+        storeReducer({
+          type: GlobalStoreActionType.SET_CURRENT_LIST,
+          payload: playlist,
+        });
       }
     }
     asyncSetCurrentList(id);
     store.clearAllTransactions();
   };
 
+  store.setSelectedList = function (id) {
+    console.log("INITATING CURRENT SELECTED LIST");
+    async function asyncSetSelectedList(id) {
+      let response = await api.getPlaylistById(id);
+      if (response.data.success) {
+        let playlist = response.data.playlist;
+        playlist.listens += 1;
+        response = await api.updatePlaylistById(playlist._id, playlist);
+        if (response.data.success) {
+          storeReducer({
+            type: GlobalStoreActionType.SET_SELECTED_LIST,
+            payload: playlist,
+          });
+        }
+      }
+    }
+    asyncSetSelectedList(id);
+    store.clearAllTransactions();
+  }
+
+  
   store.getPlaylistSize = function () {
     return store.currentList.songs.length;
   };

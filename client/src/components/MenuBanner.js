@@ -74,6 +74,32 @@ export default function MenuBanner() {
     store.setFilter(filter);
   };
 
+  const CurrentTab = {
+    HOME: "HOME",
+    PLAYLISTS: "PLAYLISTS",
+    USERS: "USERS"
+  }
+
+  let homeTab = "";
+  let playlistsTab = "";
+  let usersTab = "";
+
+  if (store.currentTab === CurrentTab.HOME) {
+    homeTab = {
+      color: "green"
+    }
+  }
+  else if (store.currentTab === CurrentTab.PLAYLISTS) {
+    playlistsTab = {
+      color: "green"
+    }
+  }
+  else if (store.currentTab === CurrentTab.USERS) {
+    usersTab = {
+      color: "green"
+    }
+  }
+
   const menuId = "primary-search-account-menu";
 
   const sortMenu = (
@@ -124,9 +150,9 @@ export default function MenuBanner() {
       <AppBar position="static" sx={{ backgroundColor: "gray" }}>
         <Toolbar>
           <Typography variant="h4" noWrap component="div" sx={{ marginTop: 2 }}>
-            <Link style={{ textDecoration: "none", color: "white" }} to="/">
-              <HomeIcon fontSize="large"></HomeIcon>
-            </Link>
+            <IconButton onClick={() => { store.switchHomeTab() }}>
+              <HomeIcon fontSize="large" sx={homeTab}></HomeIcon>
+            </IconButton>
           </Typography>
           <Typography
             variant="h4"
@@ -134,9 +160,9 @@ export default function MenuBanner() {
             component="div"
             sx={{ marginTop: 2, marginLeft: 1 }}
           >
-            <Link style={{ textDecoration: "none", color: "white" }} to="/">
-              <PeopleIcon fontSize="large"></PeopleIcon>
-            </Link>
+            <IconButton onClick={() => { store.switchPlaylistsTab() }}>
+              <PeopleIcon fontSize="large" sx={playlistsTab} onClick={() => { store.switchPlaylistsTab() }}></PeopleIcon>
+            </IconButton>
           </Typography>
           <Typography
             variant="h4"
@@ -144,9 +170,9 @@ export default function MenuBanner() {
             component="div"
             sx={{ marginTop: 2, marginLeft: 1 }}
           >
-            <Link style={{ textDecoration: "none", color: "white" }} to="/">
-              <PersonIcon fontSize="large"></PersonIcon>
-            </Link>
+            <IconButton onClick={() => { store.switchUsersTab() }}>
+              <PersonIcon fontSize="large" sx={usersTab}></PersonIcon>
+            </IconButton>
           </Typography>
           <Typography
             variant="h4"

@@ -30,6 +30,12 @@ const HomeScreen = () => {
   const { auth } = useContext(AuthContext);
   const { store } = useContext(GlobalStoreContext);
 
+  const CurrentTab = {
+    HOME: "HOME",
+    PLAYLISTS: "PLAYLISTS",
+    USERS: "USERS"
+  }
+
   useEffect(() => {
     store.loadIdNamePairs();
   }, []);
@@ -60,26 +66,50 @@ const HomeScreen = () => {
   if (store) {
     console.log("SORT IN HOME IS: " + store.currentSort);
     let sortedListCards = store.sort();
-    let filteredListCards = sortedListCards.filter((pair) => {
-      if (store.filterName === "" || store.filterName === " ") {
-        return pair;
-      } else if (
-        pair.name.toLowerCase().includes(store.filterName.toLowerCase())
-      ) {
-        return pair;
-      }
-    });
+    let filteredListCards;
+    if (store.currentTab === CurrentTab.PLAYLISTS || store.currentTab === CurrentTab.USERS){
+      sortedListCards = sortedListCards.filter((pair) => {
+        if (pair.published){
+          return pair;
+        }
+      })
+    }
+
+    if (store.currentTab === CurrentTab.USERS){
+      filteredListCards = sortedListCards.filter((pair) => {
+        if (store.filterName === "" || store.filterName === " ") {
+          return pair;
+        } else if (
+          pair.userName.toLowerCase().includes(store.filterName.toLowerCase())
+        ) {
+          return pair;
+        }
+      });
+    }
+    else{
+      filteredListCards = sortedListCards.filter((pair) => {
+        if (store.filterName === "" || store.filterName === " ") {
+          return pair;
+        } else if (
+          pair.name.toLowerCase().includes(store.filterName.toLowerCase())
+        ) {
+          return pair;
+        }
+      });
+    }
+    
 
     listCard = (
       <List sx={{ top: "5%", width: "90%", left: "5%" }}>
         {filteredListCards.map((pair) => (
           <div
             style={{
-              backgroundColor: "lightgray",
+              backgroundColor: "lightgray", 
               borderRadius: 10,
               border: "2px solid black",
               margin: 10,
             }}
+            onDoubleClick={() => {store.setSelectedList(pair._id)}}
           >
             <ListCard key={pair._id} idNamePair={pair} selected={false} />
           </div>
@@ -90,7 +120,7 @@ const HomeScreen = () => {
 
   let comments = "";
 
-  if (store.currentList !== null) {
+  if (store.currentSelectedList !== null) {
     comments = (
       <List
         sx={{
@@ -101,7 +131,7 @@ const HomeScreen = () => {
           overflowY: "scroll",
         }}
       >
-        {store.currentList.comments.map((comment) => (
+        {store.currentSelectedList.comments.map((comment) => (
           <div
             style={{
               backgroundColor: "lightgray",
@@ -204,6 +234,7 @@ const HomeScreen = () => {
           id="add-list-button"
           onClick={handleCreateNewList}
           sx={{ backgroundColor: "lightgray", color: "black" }}
+          disabled={store.currentTab === CurrentTab.USERS || store.currentTab === CurrentTab.PLAYLISTS}
         >
           <AddIcon />
         </Fab>

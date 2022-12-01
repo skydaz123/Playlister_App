@@ -27,6 +27,12 @@ function ListCard(props) {
   const date = idNamePair.date;
   const formattedDate = date.substring(0, 10);
 
+  const CurrentTab = {
+    HOME: "HOME",
+    PLAYLISTS: "PLAYLISTS",
+    USERS: "USERS"
+  }
+
   function handleLoadList(event, id) {
     console.log("handleLoadList for " + id);
     if (!event.target.disabled) {
@@ -43,7 +49,9 @@ function ListCard(props) {
 
   function handleToggleEdit(event) {
     event.stopPropagation();
-    toggleEdit();
+    if (!idNamePair.published || !store.currentTab === CurrentTab.USERS || !store.currentTab === CurrentTab.PLAYLISTS) {
+      toggleEdit();
+    }
   }
 
   function toggleEdit() {
@@ -83,11 +91,21 @@ function ListCard(props) {
     </IconButton>
   );
 
-  /*<IconButton
-          onClick={(event) => {
-            handleExpandList(event, idNamePair._id);
-          }}
-        ></IconButton>*/
+  let deleteListButton = "";
+
+  if (store.currentTab === CurrentTab.HOME) {
+    deleteListButton = (
+    <Button
+      variant="contained"
+      sx={{ fontSize: 13 }}
+      onClick={() => {
+        handleDeleteList(idNamePair._id);
+      }}
+    >
+      Delete
+    </Button>
+    )
+  }
 
   let songList = <div></div>;
 
@@ -113,15 +131,7 @@ function ListCard(props) {
             <Button variant="contained" sx={{ fontSize: 13 }} onClick={() => { store.publishList(idNamePair._id) }}>
               Publish
             </Button>
-            <Button
-              variant="contained"
-              sx={{ fontSize: 13 }}
-              onClick={() => {
-                handleDeleteList(idNamePair._id);
-              }}
-            >
-              Delete
-            </Button>
+            {deleteListButton}
             <Button
               variant="contained"
               sx={{ fontSize: 13 }}
@@ -142,15 +152,7 @@ function ListCard(props) {
             <WorkspaceScreen />
           </Box>
           <Box>
-            <Button
-              variant="contained"
-              sx={{ fontSize: 13 }}
-              onClick={() => {
-                handleDeleteList(idNamePair._id);
-              }}
-            >
-              Delete
-            </Button>
+            {deleteListButton}
             <Button
               variant="contained"
               sx={{ fontSize: 13 }}
@@ -176,10 +178,30 @@ function ListCard(props) {
     cardStatus = true;
   }
 
+  let selectedListColor = {
+    backgroundColor: "lightgray",
+    borderRadius: 2
+  };
+
+  if (store.currentSelectedList !== null && store.currentSelectedList._id === idNamePair._id) {
+    if (idNamePair.published) {
+      selectedListColor = {
+        backgroundColor: "orange",
+        borderRadius: 2
+      };
+    }
+    else {
+      selectedListColor = {
+        backgroundColor: "yellow",
+        borderRadius: 2
+      };
+    }
+  }
+
 
 
   let cardElement = (
-    <Grid container style={{ marginTop: 10 }}>
+    <Grid container sx={selectedListColor} >
       <Grid Item md={8}>
         <div style={{ fontSize: 40 }} onDoubleClick={handleToggleEdit}>{idNamePair.name}</div>
       </Grid>

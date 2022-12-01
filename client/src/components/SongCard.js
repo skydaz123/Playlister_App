@@ -3,9 +3,24 @@ import { GlobalStoreContext } from '../store'
 
 function SongCard(props) {
     const { store } = useContext(GlobalStoreContext);
-    const [ draggedTo, setDraggedTo ] = useState(0);
-    const { song, index } = props;
+    const [draggedTo, setDraggedTo] = useState(0);
+    const { song, index, isPublished } = props;
 
+    let isDraggable = false;
+
+    let deleteButton = "";
+    if (!isPublished) {
+        isDraggable = true;
+        deleteButton = (
+            <input
+                type="button"
+                id={"remove-song-" + index}
+                className="list-card-button"
+                value={"\u2715"}
+                onClick={handleRemoveSong}
+            />
+        )
+    }
     function handleDragStart(event) {
         event.dataTransfer.setData("song", index);
     }
@@ -34,13 +49,11 @@ function SongCard(props) {
         store.addMoveSongTransaction(sourceIndex, targetIndex);
     }
     function handleRemoveSong(event) {
+        event.stopPropagation();
         store.showRemoveSongModal(index, song);
     }
     function handleClick(event) {
-        // DOUBLE CLICK IS FOR SONG EDITING
-        if (event.detail === 2) {
-            store.showEditSongModal(index, song);
-        }
+        store.showEditSongModal(index, song);
     }
 
     let cardClass = "list-card unselected-list-card";
@@ -54,7 +67,7 @@ function SongCard(props) {
             onDragEnter={handleDragEnter}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
-            draggable="true"
+            draggable={isDraggable}
             onClick={handleClick}
         >
             {index + 1}.
@@ -64,13 +77,7 @@ function SongCard(props) {
                 href={"https://www.youtube.com/watch?v=" + song.youTubeId}>
                 {song.title} by {song.artist}
             </a>
-            <input
-                type="button"
-                id={"remove-song-" + index}
-                className="list-card-button"
-                value={"\u2715"}
-                onClick={handleRemoveSong}
-            />
+            {deleteButton}
         </div>
     );
 }
