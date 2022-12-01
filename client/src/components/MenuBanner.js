@@ -42,7 +42,6 @@ export default function MenuBanner() {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
-
   const handleSortNames = () => {
     store.setSort(CurrentSort.NAMES);
     handleMenuClose();
@@ -63,6 +62,43 @@ export default function MenuBanner() {
     store.setSort(CurrentSort.DISLIKES);
     handleMenuClose();
   };
+
+  let selectedSortNames = "";
+  let selectedSortDate = "";
+  let selectedSortListens = "";
+  let selectedSortLikes = "";
+  let selectedSortDislikes = "";
+
+  if (store.currentSort === CurrentSort.NAMES){
+    selectedSortNames = {
+      border: "1px solid black",
+      backgroundColor: "darkgray"
+    }
+  }
+  if (store.currentSort === CurrentSort.DATES){
+    selectedSortDate = {
+      border: "1px solid black",
+      backgroundColor: "darkgray"
+    }
+  }
+  if (store.currentSort === CurrentSort.LISTENS){
+    selectedSortListens = {
+      border: "1px solid black",
+      backgroundColor: "darkgray"
+    }
+  }
+  if (store.currentSort === CurrentSort.LIKES){
+    selectedSortLikes = {
+      border: "1px solid black",
+      backgroundColor: "darkgray"
+    }
+  }
+  if (store.currentSort === CurrentSort.DISLIKES){
+    selectedSortDislikes = {
+      border: "1px solid black",
+      backgroundColor: "darkgray"
+    }
+  }
 
   useEffect(() => {
     console.log("FILTER IN SEARCHBAR IS: " + filter);
@@ -118,19 +154,19 @@ export default function MenuBanner() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleSortNames} sx={{ border: "1px solid black" }}>
+      <MenuItem onClick={handleSortNames} sx={selectedSortNames}>
         Name (A - Z)
       </MenuItem>
-      <MenuItem onClick={handleSortDate} sx={{ border: "1px solid black" }}>
+      <MenuItem onClick={handleSortDate} sx={selectedSortDate}>
         Publish Date (Newest){" "}
       </MenuItem>
-      <MenuItem onClick={handleSortListens} sx={{ border: "1px solid black" }}>
+      <MenuItem onClick={handleSortListens} sx={selectedSortListens}>
         Listens (High - Low)
       </MenuItem>
-      <MenuItem onClick={handleSortLikes} sx={{ border: "1px solid black" }}>
+      <MenuItem onClick={handleSortLikes} sx={selectedSortLikes}>
         Likes (High - Low)
       </MenuItem>
-      <MenuItem onClick={handleSortDislikes} sx={{ border: "1px solid black" }}>
+      <MenuItem onClick={handleSortDislikes} sx={selectedSortDislikes}>
         Dislikes (High - Low)
       </MenuItem>
     </Menu>

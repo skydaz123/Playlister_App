@@ -183,6 +183,7 @@ const HomeScreen = () => {
               value="two"
               label="Comments"
               sx={{ border: "1px solid black" }}
+              disabled={store.currentSelectedList === null}
             />
           </Tabs>
           <Box
