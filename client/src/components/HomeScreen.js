@@ -7,7 +7,7 @@ import Grid from "@mui/material/Grid";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Paper from "@mui/material/Paper";
-//import { YouTubePlayerExample } from "../YouTubePlaylisterReact/src/PlaylisterYouTubePlayer";
+import YouTubePlayerExample from "./Player";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import AppBanner from "./AppBanner";
 import MenuBanner from "./MenuBanner";
@@ -33,8 +33,8 @@ const HomeScreen = () => {
   const CurrentTab = {
     HOME: "HOME",
     PLAYLISTS: "PLAYLISTS",
-    USERS: "USERS"
-  }
+    USERS: "USERS",
+  };
 
   useEffect(() => {
     store.loadIdNamePairs();
@@ -67,15 +67,18 @@ const HomeScreen = () => {
     console.log("SORT IN HOME IS: " + store.currentSort);
     let sortedListCards = store.sort();
     let filteredListCards;
-    if (store.currentTab === CurrentTab.PLAYLISTS || store.currentTab === CurrentTab.USERS){
+    if (
+      store.currentTab === CurrentTab.PLAYLISTS ||
+      store.currentTab === CurrentTab.USERS
+    ) {
       sortedListCards = sortedListCards.filter((pair) => {
-        if (pair.published){
+        if (pair.published) {
           return pair;
         }
-      })
+      });
     }
 
-    if (store.currentTab === CurrentTab.USERS){
+    if (store.currentTab === CurrentTab.USERS) {
       filteredListCards = sortedListCards.filter((pair) => {
         if (store.filterName === "" || store.filterName === " ") {
           return pair;
@@ -85,8 +88,7 @@ const HomeScreen = () => {
           return pair;
         }
       });
-    }
-    else{
+    } else {
       filteredListCards = sortedListCards.filter((pair) => {
         if (store.filterName === "" || store.filterName === " ") {
           return pair;
@@ -97,19 +99,20 @@ const HomeScreen = () => {
         }
       });
     }
-    
 
     listCard = (
       <List sx={{ top: "5%", width: "90%", left: "5%" }}>
         {filteredListCards.map((pair) => (
           <div
             style={{
-              backgroundColor: "lightgray", 
+              backgroundColor: "lightgray",
               borderRadius: 10,
               border: "2px solid black",
               margin: 10,
             }}
-            onDoubleClick={() => {store.setSelectedList(pair._id)}}
+            onDoubleClick={() => {
+              store.setSelectedList(pair._id);
+            }}
           >
             <ListCard key={pair._id} idNamePair={pair} selected={false} />
           </div>
@@ -120,6 +123,38 @@ const HomeScreen = () => {
 
   let comments = "";
 
+  /*<Box
+              sx={{
+                bgcolor: "red",
+                width: "100%",
+                height: 350,
+                borderRadius: 1,
+              }}
+            >
+              {comments}
+            </Box>
+            <Box
+              sx={{
+                bgcolor: "white",
+                width: "100%",
+                height: 50,
+                borderRadius: 2,
+              }}
+            >
+              <TextField
+                fullWidth
+                label="Type comment..."
+                autoFocus
+                onChange={(event) => {
+                  setComment(event.target.value);
+                }}
+                onKeyPress={(event) => {
+                  handleSubmit(event);
+                }}
+                value={comment}
+              />
+            </Box> */
+  /*
   if (store.currentSelectedList !== null) {
     comments = (
       <List
@@ -148,6 +183,7 @@ const HomeScreen = () => {
       </List>
     );
   }
+  */
   return (
     <Box sx={{ maxHeight: "90%" }}>
       <Grid container spacing={2}>
@@ -189,42 +225,12 @@ const HomeScreen = () => {
           <Box
             sx={{
               bgcolor: "lightgray",
-              width: "95%",
+              width: "97.4%",
               height: 400,
               borderRadius: 1,
             }}
           >
-            <Box
-              sx={{
-                bgcolor: "red",
-                width: "100%",
-                height: 350,
-                borderRadius: 1,
-              }}
-            >
-              {comments}
-            </Box>
-            <Box
-              sx={{
-                bgcolor: "yellow",
-                width: "100%",
-                height: 50,
-                borderRadius: 2,
-              }}
-            >
-              <TextField
-                fullWidth
-                label="Type comment..."
-                autoFocus
-                onChange={(event) => {
-                  setComment(event.target.value);
-                }}
-                onKeyPress={(event) => {
-                  handleSubmit(event);
-                }}
-                value={comment}
-              />
-            </Box>
+            <YouTubePlayerExample />
           </Box>
         </Grid>
         <Grid item></Grid>
@@ -235,7 +241,10 @@ const HomeScreen = () => {
           id="add-list-button"
           onClick={handleCreateNewList}
           sx={{ backgroundColor: "lightgray", color: "black" }}
-          disabled={store.currentTab === CurrentTab.USERS || store.currentTab === CurrentTab.PLAYLISTS}
+          disabled={
+            store.currentTab === CurrentTab.USERS ||
+            store.currentTab === CurrentTab.PLAYLISTS
+          }
         >
           <AddIcon />
         </Fab>
