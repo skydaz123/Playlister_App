@@ -560,12 +560,9 @@ function GlobalStoreContextProvider(props) {
   store.sort = function () {
     let list = store.idNamePairs;
     if (store.currentSort === CurrentSort.NAMES) {
-      console.log("HIT SORT NAMES");
       list = list.sort((a, b) => a.name.localeCompare(b.name));
     } else if (store.currentSort === CurrentSort.DATES) {
-      list = list.sort(
-        (a, b) => new Date(a.publishDate) - new Date(b.publishDate)
-      );
+      list = list.sort((a, b) => new Date(a.publishDate) > new Date(b.publishDate) ? -1 : 1);
     } else if (store.currentSort === CurrentSort.LISTENS) {
       list = list.sort((a, b) => (a.listens > b.listens ? -1 : 1));
     } else if (store.currentSort === CurrentSort.LIKES) {
@@ -575,10 +572,10 @@ function GlobalStoreContextProvider(props) {
       list = list.sort((a, b) => (a.dislikes > b.dislikes ? -1 : 1));
     }
     else if (store.currentSort === CurrentSort.CREATED_DATE){
-      list = list.sort((a, b) => (a.date < b.date ? -1 : 1));
+      list = list.sort((a, b) => new Date(a.date) < new Date(b.date) ? -1 : 1);
     }
     else if (store.currentSort === CurrentSort.LAST_EDITED){
-      list = list.sort((a, b) => (a.update > b.update ? -1 : 1));
+      list = list.sort((a, b) => new Date(a.update) > new Date(b.update) ? -1 : 1);
     }
     return list;
   };
