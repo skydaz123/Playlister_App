@@ -1,14 +1,18 @@
 import { Button } from '@mui/material';
-import React from 'react'
+import { useContext } from 'react'
 import '../App.css'
 import { GlobalStoreContext } from '../store'
 import { Link } from 'react-router-dom'
+import AuthContext from '../auth'
+
 
 export default function SplashScreen() {
-   
+    const { auth } = useContext(AuthContext);
+    const { store } = useContext(GlobalStoreContext);
 
-    const handleClick = () => {
-        console.log("click");
+    const handleGuestLogin = () => {
+        store.switchPlaylistsTab();
+        auth.guestLogin();
     }
 
     return (
@@ -26,7 +30,7 @@ export default function SplashScreen() {
             </div>
             <div style={{ fontSize: 20 }}>Too lazy to make an account?</div>
             <div style={{ marginBottom: 20 }}>
-                <Button variant="contained" size="medium" color="secondary">Continue as Guest</Button>
+                <Button variant="contained" size="medium" color="secondary" onClick={handleGuestLogin}>Continue as Guest</Button>
             </div>
             <div style={{ fontSize: 15 }}>Created by: Hao Duong</div>
         </div>

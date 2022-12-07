@@ -24,7 +24,6 @@ function ListCard(props) {
   const [text, setText] = useState("");
   const { idNamePair, selected } = props;
 
-  const date = idNamePair.date;
 
   const CurrentTab = {
     HOME: "HOME",
@@ -198,14 +197,13 @@ function ListCard(props) {
   }
 
 
-
   let cardElement = (
     <Grid container sx={selectedListColor} >
-      <Grid Item md={8}>
-        <div style={{ fontSize: 40 }} onDoubleClick={handleToggleEdit}>{idNamePair.name}</div>
+      <Grid Item md={6}>
+        <Typography style={{ fontSize: 40 }} onDoubleClick={handleToggleEdit} disabled={auth.user === "guest"}>{idNamePair.name}</Typography>
       </Grid>
-      <Grid Item md={1}>
-        <IconButton onClick={() => { store.likeList(idNamePair._id) }}>
+      <Grid Item md={2}>
+        <IconButton sx={{marginLeft: 4}}onClick={() => { store.likeList(idNamePair._id) }} disabled={auth.user === "guest"}>
           <ThumbUpIcon fontSize="large" />
         </IconButton>
       </Grid>
@@ -215,7 +213,7 @@ function ListCard(props) {
         </Grid>
       </Grid>
       <Grid Item>
-        <IconButton onClick={() => { store.dislikeList(idNamePair._id) }}>
+        <IconButton onClick={() => { store.dislikeList(idNamePair._id) }} disabled={auth.user === "guest"}>
           <ThumbDownIcon fontSize="large" />
         </IconButton>
       </Grid>

@@ -100,10 +100,10 @@ export default function MenuBanner() {
     }
   }
 
-  /*useEffect(() => {
+  useEffect(() => {
     console.log("FILTER IN SEARCHBAR IS: " + filter);
     store.setFilter(filter);
-  }, [filter]);*/
+  }, [filter]);
 
   const handleInput = (event) => {
     setFilter(event.target.value);
@@ -186,7 +186,7 @@ export default function MenuBanner() {
       <AppBar position="static" sx={{ backgroundColor: "gray" }}>
         <Toolbar>
           <Typography variant="h4" noWrap component="div" sx={{ marginTop: 2 }}>
-            <IconButton onClick={() => { store.switchHomeTab() }}>
+            <IconButton disabled={auth.user === "guest"} onClick={() => { store.switchHomeTab() }}>
               <HomeIcon fontSize="large" sx={homeTab}></HomeIcon>
             </IconButton>
           </Typography>

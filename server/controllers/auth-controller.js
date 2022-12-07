@@ -31,7 +31,7 @@ getLoggedIn = async (req, res) => {
 }
 
 loginUser = async (req, res) => {
-    console.log("loginUser");
+    console.log("TEST LOGIN FOR GUEST");
     try {
         const { email, password } = req.body;
 

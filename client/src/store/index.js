@@ -41,6 +41,7 @@ export const GlobalStoreActionType = {
   LIKE_DISLIKE_LIST: "LIKE_DISLIKE_LIST",
   SWITCH_PLAYER: "SWITCH_PLAYER",
   SWITCH_COMMENTS: "SWITCH_COMMENTS",
+  LOGOUT: "LOGOUT",
 };
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -470,6 +471,24 @@ function GlobalStoreContextProvider(props) {
           openPlayer: true,
         });
       }
+      case GlobalStoreActionType.LOGOUT: {
+        return setStore({
+          currentModal: CurrentModal.NONE,
+          currentSort: CurrentSort.NONE,
+          currentTab: CurrentTab.HOME,
+          idNamePairs: [],
+          currentList: null,
+          currentSelectedList: null,
+          currentSongIndex: -1,
+          currentSong: null,
+          newListCounter: null,
+          listNameActive: false,
+          listIdMarkedForDeletion: null,
+          listMarkedForDeletion: null,
+          filterName: "",
+          openPlayer: true,
+        });
+      }
       default:
         return store;
     }
@@ -478,6 +497,13 @@ function GlobalStoreContextProvider(props) {
   useEffect(() => {
     store.loadIdNamePairs();
   }, [store.currentTab, store.currentSelectedList]);
+
+  store.logout = function () {
+    storeReducer({
+      type: GlobalStoreActionType.LOGOUT,
+      payload: {},
+    });
+  };
 
   store.switchComments = function () {
     storeReducer({
@@ -713,7 +739,7 @@ function GlobalStoreContextProvider(props) {
   // THIS FUNCTION CREATES A NEW LIST
   store.createNewList = function () {
     async function asyncCreateNewList() {
-      let templateName = "Untitled"
+      let templateName = "Untitled";
       let count = 0;
       let newListName = templateName + count;
       while (store.containsListName(newListName)) {
@@ -749,8 +775,7 @@ function GlobalStoreContextProvider(props) {
           count++;
           newListName = templateName.slice(0, -1) + count;
         }
-      } 
-      else {
+      } else {
         let count2 = 1;
         newListName += count2;
         while (store.containsListName(newListName)) {
@@ -899,7 +924,9 @@ function GlobalStoreContextProvider(props) {
       let response = await api.getPlaylistById(id);
       if (response.data.success) {
         let playlist = response.data.playlist;
-        playlist.listens += 1;
+        if (store.currentSelectedList !== null && store.currentSelectedList._id !== playlist._id) {
+          playlist.listens += 1;
+        }
         response = await api.updatePlaylistById(playlist._id, playlist);
         if (response.data.success) {
           storeReducer({

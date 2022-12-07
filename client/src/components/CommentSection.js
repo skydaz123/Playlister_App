@@ -87,6 +87,7 @@ const CommentsSection = (props) => {
           }}
         >
           <TextField
+            disabled={auth.user === "guest"}
             fullWidth
             label="Type comment..."
             autoFocus
