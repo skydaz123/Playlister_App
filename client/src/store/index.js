@@ -278,8 +278,8 @@ function GlobalStoreContextProvider(props) {
           currentModal: CurrentModal.ERROR_MODAL,
           currentSort: store.currentSort,
           currentTab: store.currentTab,
-          idNamePairs: null,
-          currentList: null,
+          idNamePairs: store.idNamePairs,
+          currentList: store.currentList,
           currentSelectedList: store.currentSelectedList,
           currentSongIndex: null,
           currentSong: null,
@@ -578,12 +578,10 @@ function GlobalStoreContextProvider(props) {
   // THIS FUNCTION PROCESSES CHANGING A LIST NAME
 
   store.changeListName = function (id, newName) {
-    // GET THE LIST
     async function asyncChangeListName(id) {
       let response = await api.getPlaylistById(id);
       if (response.data.success) {
         let playlist = response.data.playlist;
-
         playlist.name = newName;
         async function updateList(playlist) {
           response = await api.updatePlaylistById(playlist._id, playlist);
@@ -597,7 +595,11 @@ function GlobalStoreContextProvider(props) {
         updateList(playlist);
       }
     }
-    asyncChangeListName(id);
+    if (store.containsListName(newName)) {
+      store.showListErrorModal();
+    } else {
+      asyncChangeListName(id);
+    }
   };
 
   store.publishList = function (id) {
@@ -873,7 +875,7 @@ function GlobalStoreContextProvider(props) {
     });
   };
 
-  store.showErrorModal = () => {
+  store.showListErrorModal = () => {
     storeReducer({
       type: GlobalStoreActionType.ERROR_MODAL,
       payload: {},
@@ -895,7 +897,7 @@ function GlobalStoreContextProvider(props) {
   store.isRemoveSongModalOpen = () => {
     return store.currentModal === CurrentModal.REMOVE_SONG;
   };
-  store.isErrorModalOpen = () => {
+  store.isListErrorModalOpen = () => {
     return store.currentModal === CurrentModal.ERROR_MODAL;
   };
 
@@ -924,7 +926,10 @@ function GlobalStoreContextProvider(props) {
       let response = await api.getPlaylistById(id);
       if (response.data.success) {
         let playlist = response.data.playlist;
-        if (store.currentSelectedList !== null && store.currentSelectedList._id !== playlist._id) {
+        if (
+          store.currentSelectedList !== null &&
+          store.currentSelectedList._id !== playlist._id
+        ) {
           playlist.listens += 1;
         }
         response = await api.updatePlaylistById(playlist._id, playlist);

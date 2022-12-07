@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { GlobalStoreContext } from "../store";
 import ListCard from "./ListCard.js";
 import MUIDeleteModal from "./MUIDeleteModal";
+import MUIListErrorModal from "./MUIListErrorModal";
 import Grid from "@mui/material/Grid";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -122,6 +123,7 @@ const HomeScreen = () => {
           <div id="list-selector-list">
             {listCard}
             <MUIDeleteModal />
+            <MUIListErrorModal />
           </div>
         </Grid>
         <Grid item md={6}>
