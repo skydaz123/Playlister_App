@@ -62,6 +62,8 @@ const CurrentSort = {
   LISTENS: "LISTENS",
   LIKES: "LIKES",
   DISLIKES: "DISLIKES",
+  CREATED_DATE: "CREATED_DATE",
+  LAST_EDITED: "LAST_EDITED"
 };
 
 const CurrentTab = {
@@ -384,7 +386,7 @@ function GlobalStoreContextProvider(props) {
       case GlobalStoreActionType.SWITCH_PLAYLISTS_TAB: {
         return setStore({
           currentModal: CurrentModal.NONE,
-          currentSort: store.currentSort,
+          currentSort: store.NONE,
           currentTab: CurrentTab.PLAYLISTS,
           idNamePairs: store.idNamePairs,
           currentList: store.currentList,
@@ -402,7 +404,7 @@ function GlobalStoreContextProvider(props) {
       case GlobalStoreActionType.SWITCH_USERS_TAB: {
         return setStore({
           currentModal: CurrentModal.NONE,
-          currentSort: store.currentSort,
+          currentSort: store.NONE,
           currentTab: CurrentTab.USERS,
           idNamePairs: store.idNamePairs,
           currentList: store.currentList,
@@ -557,7 +559,6 @@ function GlobalStoreContextProvider(props) {
 
   store.sort = function () {
     let list = store.idNamePairs;
-    console.log("SORT IS SET TO: " + store.currentSort);
     if (store.currentSort === CurrentSort.NAMES) {
       console.log("HIT SORT NAMES");
       list = list.sort((a, b) => a.name.localeCompare(b.name));
@@ -572,6 +573,12 @@ function GlobalStoreContextProvider(props) {
       list = list.sort((a, b) => (a.likes > b.likes ? -1 : 1));
     } else if (store.currentSort === CurrentSort.DISLIKES) {
       list = list.sort((a, b) => (a.dislikes > b.dislikes ? -1 : 1));
+    }
+    else if (store.currentSort === CurrentSort.CREATED_DATE){
+      list = list.sort((a, b) => (a.date < b.date ? -1 : 1));
+    }
+    else if (store.currentSort === CurrentSort.LAST_EDITED){
+      list = list.sort((a, b) => (a.update > b.update ? -1 : 1));
     }
     return list;
   };

@@ -33,6 +33,8 @@ export default function MenuBanner() {
     LISTENS: "LISTENS",
     LIKES: "LIKES",
     DISLIKES: "DISLIKES",
+    CREATED_DATE: "CREATED_DATE",
+    LAST_EDITED: "LAST_EDITED",
   };
 
   const handleProfileMenuOpen = (event) => {
@@ -62,42 +64,64 @@ export default function MenuBanner() {
     store.setSort(CurrentSort.DISLIKES);
     handleMenuClose();
   };
+  const handleSortCreationDate = () => {
+    store.setSort(CurrentSort.CREATED_DATE);
+    handleMenuClose();
+  };
+  const handleSortLastEdited = () => {
+    store.setSort(CurrentSort.LAST_EDITED);
+    handleMenuClose();
+  };
 
   let selectedSortNames = "";
   let selectedSortDate = "";
   let selectedSortListens = "";
   let selectedSortLikes = "";
   let selectedSortDislikes = "";
+  let selectedSortCreationDate = "";
+  let selectedSortLastEdited = "";
 
-  if (store.currentSort === CurrentSort.NAMES){
+  if (store.currentSort === CurrentSort.NAMES) {
     selectedSortNames = {
       border: "1px solid black",
-      backgroundColor: "darkgray"
-    }
+      backgroundColor: "darkgray",
+    };
   }
-  if (store.currentSort === CurrentSort.DATES){
+  if (store.currentSort === CurrentSort.DATES) {
     selectedSortDate = {
       border: "1px solid black",
-      backgroundColor: "darkgray"
-    }
+      backgroundColor: "darkgray",
+    };
   }
-  if (store.currentSort === CurrentSort.LISTENS){
+  if (store.currentSort === CurrentSort.LISTENS) {
     selectedSortListens = {
       border: "1px solid black",
-      backgroundColor: "darkgray"
-    }
+      backgroundColor: "darkgray",
+    };
   }
-  if (store.currentSort === CurrentSort.LIKES){
+  if (store.currentSort === CurrentSort.LIKES) {
     selectedSortLikes = {
       border: "1px solid black",
-      backgroundColor: "darkgray"
-    }
+      backgroundColor: "darkgray",
+    };
   }
-  if (store.currentSort === CurrentSort.DISLIKES){
+  if (store.currentSort === CurrentSort.DISLIKES) {
     selectedSortDislikes = {
       border: "1px solid black",
-      backgroundColor: "darkgray"
-    }
+      backgroundColor: "darkgray",
+    };
+  }
+  if (store.currentSort === CurrentSort.CREATED_DATE) {
+    selectedSortCreationDate = {
+      border: "1px solid black",
+      backgroundColor: "darkgray",
+    };
+  }
+  if (store.currentSort === CurrentSort.LAST_EDITED) {
+    selectedSortLastEdited = {
+      border: "1px solid black",
+      backgroundColor: "darkgray",
+    };
   }
 
   useEffect(() => {
@@ -113,8 +137,8 @@ export default function MenuBanner() {
   const CurrentTab = {
     HOME: "HOME",
     PLAYLISTS: "PLAYLISTS",
-    USERS: "USERS"
-  }
+    USERS: "USERS",
+  };
 
   let homeTab = "";
   let playlistsTab = "";
@@ -122,22 +146,63 @@ export default function MenuBanner() {
 
   if (store.currentTab === CurrentTab.HOME) {
     homeTab = {
-      color: "green"
-    }
-  }
-  else if (store.currentTab === CurrentTab.PLAYLISTS) {
+      color: "green",
+    };
+  } else if (store.currentTab === CurrentTab.PLAYLISTS) {
     playlistsTab = {
-      color: "green"
-    }
-  }
-  else if (store.currentTab === CurrentTab.USERS) {
+      color: "green",
+    };
+  } else if (store.currentTab === CurrentTab.USERS) {
     usersTab = {
-      color: "green"
-    }
+      color: "green",
+    };
   }
 
   const menuId = "primary-search-account-menu";
 
+  let menuOptions = "";
+
+  if (
+    store.currentTab === CurrentTab.PLAYLISTS ||
+    store.currentTab === CurrentTab.USERS
+  ) {
+    menuOptions = (
+      <Box>
+        <MenuItem onClick={handleSortNames} sx={selectedSortNames}>
+          Name (A - Z)
+        </MenuItem>
+        <MenuItem
+          onClick={handleSortDate}
+          sx={selectedSortDate}
+        >
+          Publish Date (Newest){" "}
+        </MenuItem>
+        <MenuItem onClick={handleSortListens} sx={selectedSortListens}>
+          Listens (High - Low)
+        </MenuItem>
+        <MenuItem onClick={handleSortLikes} sx={selectedSortLikes}>
+          Likes (High - Low)
+        </MenuItem>
+        <MenuItem onClick={handleSortDislikes} sx={selectedSortDislikes}>
+          Dislikes (High - Low)
+        </MenuItem>
+      </Box>
+    );
+  } else {
+    menuOptions = (
+      <Box>
+        <MenuItem onClick={handleSortNames} sx={selectedSortNames}>
+          Name (A - Z)
+        </MenuItem>
+        <MenuItem onClick={handleSortCreationDate} sx={selectedSortCreationDate}>
+          Creation Date (Old-New)
+        </MenuItem>
+        <MenuItem onClick={handleSortLastEdited} sx={selectedSortLastEdited}>
+          Last Edited (New-Old)
+        </MenuItem>
+      </Box>
+    );
+  }
   const sortMenu = (
     <Menu
       anchorEl={anchorEl}
@@ -154,39 +219,23 @@ export default function MenuBanner() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleSortNames} sx={selectedSortNames}>
-        Name (A - Z)
-      </MenuItem>
-      <MenuItem onClick={handleSortDate} sx={selectedSortDate} disabled={store.currentTab === CurrentTab.HOME}>
-        Publish Date (Newest){" "}
-      </MenuItem>
-      <MenuItem onClick={handleSortListens} sx={selectedSortListens}>
-        Listens (High - Low)
-      </MenuItem>
-      <MenuItem onClick={handleSortLikes} sx={selectedSortLikes}>
-        Likes (High - Low)
-      </MenuItem>
-      <MenuItem onClick={handleSortDislikes} sx={selectedSortDislikes}>
-        Dislikes (High - Low)
-      </MenuItem>
+      {menuOptions}
     </Menu>
   );
 
   let menu = sortMenu;
-  /*let menu = loggedOutMenu;
-  if (auth.loggedIn) {
-    menu = loggedInMenu;
-    if (store.currentList) {
-      editToolbar = <EditToolbar />;
-    }
-  }*/
 
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" sx={{ backgroundColor: "gray" }}>
         <Toolbar>
           <Typography variant="h4" noWrap component="div" sx={{ marginTop: 2 }}>
-            <IconButton disabled={auth.user === "guest"} onClick={() => { store.switchHomeTab() }}>
+            <IconButton
+              disabled={auth.user === "guest"}
+              onClick={() => {
+                store.switchHomeTab();
+              }}
+            >
               <HomeIcon fontSize="large" sx={homeTab}></HomeIcon>
             </IconButton>
           </Typography>
@@ -196,7 +245,11 @@ export default function MenuBanner() {
             component="div"
             sx={{ marginTop: 2, marginLeft: 1 }}
           >
-            <IconButton onClick={() => { store.switchPlaylistsTab() }}>
+            <IconButton
+              onClick={() => {
+                store.switchPlaylistsTab();
+              }}
+            >
               <PeopleIcon fontSize="large" sx={playlistsTab}></PeopleIcon>
             </IconButton>
           </Typography>
@@ -206,7 +259,11 @@ export default function MenuBanner() {
             component="div"
             sx={{ marginTop: 2, marginLeft: 1 }}
           >
-            <IconButton onClick={() => { store.switchUsersTab() }}>
+            <IconButton
+              onClick={() => {
+                store.switchUsersTab();
+              }}
+            >
               <PersonIcon fontSize="large" sx={usersTab}></PersonIcon>
             </IconButton>
           </Typography>
