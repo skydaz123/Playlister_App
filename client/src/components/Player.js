@@ -12,8 +12,8 @@ import FastRewindIcon from "@mui/icons-material/FastRewind";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import StopIcon from "@mui/icons-material/Stop";
 import FastForwardIcon from "@mui/icons-material/FastForward";
-import { useRef } from "react";
-export default function YouTubePlayerExample() {
+import { useRef, useState, useEffect } from "react";
+export default function YouTubePlayerExample(props) {
   // THIS EXAMPLE DEMONSTRATES HOW TO DYNAMICALLY MAKE A
   // YOUTUBE PLAYER AND EMBED IT IN YOUR SITE. IT ALSO
   // DEMONSTRATES HOW TO IMPLEMENT A PLAYLIST THAT MOVES
@@ -21,8 +21,12 @@ export default function YouTubePlayerExample() {
 
   // THIS HAS THE YOUTUBE IDS FOR THE SONGS IN OUR PLAYLIST
   const playerRef = useRef(null);
-  let playlist = ["mqmxkGjow1A", "8RbXIMZmVv8", "8UbNbor3OqQ"];
+  const { selectedList } = props;
 
+  let playlist = null;
+  if (selectedList !== null) {
+    playlist = selectedList.songs;
+  }
   // THIS IS THE INDEX OF THE SONG CURRENTLY IN USE IN THE PLAYLIST
   let currentSong = 0;
 
@@ -38,12 +42,24 @@ export default function YouTubePlayerExample() {
   // THE PLAYER AND PLAYS IT
   function loadAndPlayCurrentSong(player) {
     let song = playlist[currentSong];
-    player.loadVideoById(song);
+    player.loadVideoById(song.youTubeId);
+    let songNumber = document.getElementById("player-song-number");
+    let songTitle = document.getElementById("player-song-title");
+    let songArtist = document.getElementById("player-song-artist");
+    songNumber.innerHTML = "Song #: " + (parseInt(currentSong)+1); 
+    songTitle.innerHTML = "Title: " + playlist[currentSong].title;
+    songArtist.innerHTML = "Artist: " + playlist[currentSong].artist;
   }
 
-  function loadFirstSong(player){
+  function loadFirstSong(player) {
     let song = playlist[currentSong];
-    player.cueVideoById(song);
+    player.cueVideoById(song.youTubeid);
+    let songNumber = document.getElementById("player-song-number");
+    let songTitle = document.getElementById("player-song-title");
+    let songArtist = document.getElementById("player-song-artist");
+    songNumber.innerHTML = "Song #: " + (parseInt(currentSong)+1); 
+    songTitle.innerHTML = "Title: " + playlist[currentSong].title;
+    songArtist.innerHTML = "Artist: " + playlist[currentSong].artist;
   }
   // THIS FUNCTION INCREMENTS THE PLAYLIST SONG TO THE NEXT ONE
   function incSong() {
@@ -59,20 +75,20 @@ export default function YouTubePlayerExample() {
   const handleSkip = () => {
     incSong();
     loadAndPlayCurrentSong(playerRef.current);
-  }
+  };
 
   const handlePrevious = () => {
-    if (currentSong != 0){
-        currentSong--;
-        loadAndPlayCurrentSong(playerRef.current);
+    if (currentSong !== 0) {
+      currentSong--;
+      loadAndPlayCurrentSong(playerRef.current);
     }
-  }
+  };
 
   const handlePlay = () => {
     if (playerRef.current.getPlayerState() !== 1) {
-        playerRef.current.mute();
-        playerRef.current.playVideo();
-        playerRef.current.unMute();
+      playerRef.current.mute();
+      playerRef.current.playVideo();
+      playerRef.current.unMute();
     }
   };
 
@@ -112,70 +128,80 @@ export default function YouTubePlayerExample() {
     }
   }
 
-  return (
-    <Grid container>
-      <Grid item>
-        <YouTube
-          videoId={playlist[currentSong]}
-          opts={playerOptions}
-          onReady={onPlayerReady}
-          onStateChange={onPlayerStateChange}
-        />
+  if (playlist === null) {
+    return <div>NO PLAYLIST DETECTED</div>;
+  } else if (playlist.length === 0) {
+    return <div>THIS PLAYLIST HAS NO SONGS</div>;
+  } else {
+    return (
+      <Grid container>
+        <Grid item>
+          <YouTube
+            videoId={playlist[currentSong].youTubeId}
+            opts={playerOptions}
+            onReady={onPlayerReady}
+            onStateChange={onPlayerStateChange}
+          />
+        </Grid>
+        <Grid item md="12">
+          <Box
+            sx={{
+              backgroundColor: "darkgray",
+              width: "100%",
+              height: 150,
+              borderRadius: 3,
+            }}
+          >
+            <Grid container>
+              <Grid item md="12">
+                <Typography sx={{ textAlign: "center" }}>
+                  Now Playing
+                </Typography>
+              </Grid>
+              <Grid item md="12">
+                Playlist: {selectedList.name}
+              </Grid>
+              <Grid item md="12">
+                <div id="player-song-number"></div>
+              </Grid>
+              <Grid item md="12">
+                <div id="player-song-title"></div>
+              </Grid>
+              <Grid item md="12">
+                <div id="player-song-artist"></div>
+              </Grid>
+              <Grid item md="12">
+                <Box
+                  sx={{
+                    backgroundColor: "white",
+                    width: "90%",
+                    height: 50,
+                    marginLeft: 3.5,
+                    borderRadius: 4,
+                    top: 5,
+                    border: "0.5px solid white",
+                  }}
+                >
+                  <IconButton sx={{ marginLeft: 18 }} onClick={handlePrevious}>
+                    <FastRewindIcon sx={{ fontSize: 50, color: "black" }} />
+                  </IconButton>
+                  <IconButton onClick={handlePause}>
+                    <StopIcon sx={{ fontSize: 50, color: "black" }} />
+                  </IconButton>
+                  <IconButton onClick={handlePlay}>
+                    <PlayArrowIcon sx={{ fontSize: 50, color: "black" }} />
+                  </IconButton>
+                  <IconButton onClick={handleSkip}>
+                    <FastForwardIcon sx={{ fontSize: 50, color: "black" }} />
+                  </IconButton>
+                </Box>
+              </Grid>
+            </Grid>
+          </Box>
+        </Grid>
       </Grid>
-      <Grid item md="12">
-        <Box
-          sx={{
-            backgroundColor: "darkgray",
-            width: "100%",
-            height: 150,
-            borderRadius: 3,
-          }}
-        >
-          <Grid container>
-            <Grid item md="12">
-              <Typography sx={{ textAlign: "center" }}>Now Playing</Typography>
-            </Grid>
-            <Grid item md="12">
-              Playlist:
-            </Grid>
-            <Grid item md="12">
-              Song #:
-            </Grid>
-            <Grid item md="12">
-              Artist:
-            </Grid>
-            <Grid item md="12">
-              <Box
-                sx={{
-                  backgroundColor: "white",
-                  width: "90%",
-                  height: 50,
-                  marginTop: 1.5,
-                  marginLeft: 3.5,
-                  borderRadius: 4,
-                  top: 5,
-                  border: "0.5px solid white",
-                }}
-              >
-                <IconButton sx={{ marginLeft: 18 }} onClick={handlePrevious}>
-                  <FastRewindIcon sx={{ fontSize: 50, color: "black" }} />
-                </IconButton>
-                <IconButton onClick={handlePause}>
-                  <StopIcon sx={{ fontSize: 50, color: "black" }} />
-                </IconButton>
-                <IconButton onClick={handlePlay} >
-                  <PlayArrowIcon sx={{ fontSize: 50, color: "black" }} />
-                </IconButton>
-                <IconButton onClick={handleSkip}>
-                  <FastForwardIcon sx={{ fontSize: 50, color: "black" }} />
-                </IconButton>
-              </Box>
-            </Grid>
-          </Grid>
-        </Box>
-      </Grid>
-    </Grid>
-  );
+    );
+  }
 }
 
 /*import FastRewindIcon from '@mui/icons-material/FastRewind';

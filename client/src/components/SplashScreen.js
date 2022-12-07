@@ -2,6 +2,7 @@ import { Button } from '@mui/material';
 import React from 'react'
 import '../App.css'
 import { GlobalStoreContext } from '../store'
+import { Link } from 'react-router-dom'
 
 export default function SplashScreen() {
    
@@ -17,11 +18,11 @@ export default function SplashScreen() {
             <div style={{ fontSize: 20, marginBottom: 40 }}>On Playlister, you can create and share custom playlists!</div>
             <div style={{ fontSize: 20 }}>First time here?</div>
             <div style={{ marginBottom: 15 }}>
-                <Button variant="contained" size="medium" color="secondary">Create an Account</Button>
+                <Button variant="contained" size="medium" color="secondary"><Link to='/register/' style={{color:"white"}}>Create an Account</Link></Button>
             </div>
             <div style={{ fontSize: 20 }}>Already have an account?</div>
             <div style={{ marginBottom: 15 }}>
-                <Button variant="contained" size="medium" color="secondary">Login</Button>
+                <Button variant="contained" size="medium" color="secondary"><Link to='/login/' style={{color:"white"}}>Login</Link></Button>
             </div>
             <div style={{ fontSize: 20 }}>Too lazy to make an account?</div>
             <div style={{ marginBottom: 20 }}>

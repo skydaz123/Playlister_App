@@ -1,4 +1,3 @@
-//import YouTubePlayerExample from './../YouTubePlaylisterReact-main/src/PlaylisterYouTubePlayer.js'
 import React, { useContext, useEffect, useState } from "react";
 import { GlobalStoreContext } from "../store";
 import ListCard from "./ListCard.js";
@@ -20,7 +19,7 @@ import { Box } from "@mui/system";
 import PlayerWrapper from "./PlayerWrapper";
 import AuthContext from "../auth";
 import TextField from "@mui/material/TextField";
-
+import CommentsSection from "./CommentSection";
 /*
     This React component lists all the top5 lists in the UI.
     
@@ -41,16 +40,6 @@ const HomeScreen = () => {
   }, []);
 
   const [value, setValue] = useState("one");
-  const [comment, setComment] = useState("");
-
-  function handleSubmit(event) {
-    if (event.code === "Enter") {
-      console.log("submitting comment... comment is : " + comment);
-      store.addComment(auth.user.userName, comment);
-      console.log("comment added");
-      setComment("");
-    }
-  }
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -120,70 +109,7 @@ const HomeScreen = () => {
       </List>
     );
   }
-
-  let comments = "";
-
-  /*<Box
-              sx={{
-                bgcolor: "red",
-                width: "100%",
-                height: 350,
-                borderRadius: 1,
-              }}
-            >
-              {comments}
-            </Box>
-            <Box
-              sx={{
-                bgcolor: "white",
-                width: "100%",
-                height: 50,
-                borderRadius: 2,
-              }}
-            >
-              <TextField
-                fullWidth
-                label="Type comment..."
-                autoFocus
-                onChange={(event) => {
-                  setComment(event.target.value);
-                }}
-                onKeyPress={(event) => {
-                  handleSubmit(event);
-                }}
-                value={comment}
-              />
-            </Box> */
-  /*
-  if (store.currentSelectedList !== null) {
-    comments = (
-      <List
-        sx={{
-          top: "5%",
-          width: "90%",
-          left: "5%",
-          height: "85%",
-          overflowY: "scroll",
-        }}
-      >
-        {store.currentSelectedList.comments.map((comment) => (
-          <div
-            style={{
-              backgroundColor: "lightgray",
-              borderRadius: 5,
-              border: "2px solid black",
-              wordWrap: "break-word",
-              margin: 10,
-              fontSize: 20,
-            }}
-          >
-            {comment.userName}: {comment.comment}
-          </div>
-        ))}
-      </List>
-    );
-  }
-  */
+  
   return (
     <Box sx={{ maxHeight: "90%" }}>
       <Grid container spacing={2}>
@@ -214,12 +140,14 @@ const HomeScreen = () => {
               value="one"
               label="Player"
               sx={{ border: "1px solid black" }}
+              onClick={() => {store.switchPlayer()}}
             />
             <Tab
               value="two"
               label="Comments"
               sx={{ border: "1px solid black" }}
               disabled={store.currentSelectedList === null}
+              onClick={() => {store.switchComments()}}
             />
           </Tabs>
           <Box
@@ -230,7 +158,7 @@ const HomeScreen = () => {
               borderRadius: 1,
             }}
           >
-            <YouTubePlayerExample />
+            <PlayerWrapper />
           </Box>
         </Grid>
         <Grid item></Grid>

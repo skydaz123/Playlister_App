@@ -25,7 +25,6 @@ function ListCard(props) {
   const { idNamePair, selected } = props;
 
   const date = idNamePair.date;
-  const formattedDate = date.substring(0, 10);
 
   const CurrentTab = {
     HOME: "HOME",

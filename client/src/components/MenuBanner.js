@@ -100,10 +100,10 @@ export default function MenuBanner() {
     }
   }
 
-  useEffect(() => {
+  /*useEffect(() => {
     console.log("FILTER IN SEARCHBAR IS: " + filter);
     store.setFilter(filter);
-  }, [filter]);
+  }, [filter]);*/
 
   const handleInput = (event) => {
     setFilter(event.target.value);
@@ -197,7 +197,7 @@ export default function MenuBanner() {
             sx={{ marginTop: 2, marginLeft: 1 }}
           >
             <IconButton onClick={() => { store.switchPlaylistsTab() }}>
-              <PeopleIcon fontSize="large" sx={playlistsTab} onClick={() => { store.switchPlaylistsTab() }}></PeopleIcon>
+              <PeopleIcon fontSize="large" sx={playlistsTab}></PeopleIcon>
             </IconButton>
           </Typography>
           <Typography
