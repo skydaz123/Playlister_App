@@ -30,4 +30,4 @@ Should you be happy with the playlist you curated, you can publish the playlist 
 Like the playlist someone has created? You can click on the thumbs up icon to like the playlist. You can also click on the DUPLICATE icon to save and modify a copy of your own. In addition, you can navigate to the Comments tab and leave behind a comment to express your thoughts. 
 ![Registered_User](docs/Comment.PNG)
 
-We have reached the end of the showcase of the song playlister app. This README only covers the core concept of the app, but there are many more features to explore on your own time such as sorting, searching, guest login, and more. Thank you for taking the time to read this document!   
+We have reached the end of the showcase of the song playlister app. This README only covers the core concept of the app, but there are many more features to explore on your own time such as sorting, searching, guest login, and more. Thank you for taking the time to check out this project!   
